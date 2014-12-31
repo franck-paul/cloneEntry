@@ -27,8 +27,8 @@ try
 	$core->blog->settings->addNamespace('cloneentry');
 
 	// Default state is active
-	$core->blog->settings->wordcount->put('ce_active_post',true,'boolean','Active for posts',false,true);
-	$core->blog->settings->wordcount->put('ce_active_page',true,'boolean','Active for pages',false,true);
+	$core->blog->settings->cloneentry->put('ce_active_post',true,'boolean','Active for posts',false,true);
+	$core->blog->settings->cloneentry->put('ce_active_page',true,'boolean','Active for pages',false,true);
 
 	$core->setVersion('cloneEntry',$new_version);
 
