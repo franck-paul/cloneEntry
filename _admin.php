@@ -21,9 +21,9 @@ $_menu['Blog']->addItem(__('Clone Entry'),'plugin.php?p=cloneEntry','index.php?p
 		$core->auth->check('page,contentadmin',$core->blog->id));
 
 // Add behaviour callback for post
-$core->addBehavior('adminPostAfterForm',array('adminCloneEntry','clonePost'));
+$core->addBehavior('adminPostForm',array('adminCloneEntry','clonePost'));
 // Add behaviour callback for page
-$core->addBehavior('adminPageAfterForm',array('adminCloneEntry','clonePage'));
+$core->addBehavior('adminPageForm',array('adminCloneEntry','clonePage'));
 
 class adminCloneEntry
 {
@@ -35,10 +35,12 @@ class adminCloneEntry
 			// Display clone button
 			$res =
 				'<form action="'.$core->adminurl->get('admin.plugin.cloneEntry').'" method="post" id="clone-form">'."\n".
-				'<input type="submit" value="'.__('Clone this entry').'" name="clone" />'."\n".
+				'<p class="top-add">'."\n".
+				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="button add" />'."\n".
 				form::hidden('id',$post->post_id)."\n".
 				form::hidden('type',$post->post_type)."\n".
 				$core->formNonce()."\n".
+				'</p>'."\n".
 				'</form>'."\n";
 			echo $res;
 		}

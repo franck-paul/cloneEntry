@@ -16,9 +16,10 @@ $this->registerModule(
 	/* Name */				"Clone Entry",
 	/* Description*/		"Make a clone of the edited entry",
 	/* Author */			"Franck Paul",
-	/* Version */			'0.2',
+	/* Version */			'0.2.1',
 	array(
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
-		/* Type */			'type' =>			'plugin'
+		/* Type */			'type' =>			'plugin',
+		/* Priority */		'priority' =>		2000
 	)
 );
