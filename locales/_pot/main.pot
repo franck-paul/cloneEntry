@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 cloneEntry module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-16 14:23+0100\n"
+"POT-Creation-Date: 2015-06-21 09:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,8 @@ msgstr ""
 
 #: ../hg-plugins/cloneEntry/_admin.php:16
 #: ../hg-plugins/cloneEntry/_admin.php:19
-#: ../hg-plugins/cloneEntry/index.php:128
-#: ../hg-plugins/cloneEntry/index.php:136
+#: ../hg-plugins/cloneEntry/index.php:141
+#: ../hg-plugins/cloneEntry/index.php:149
 msgid "Clone Entry"
 msgstr ""
 
@@ -27,18 +27,22 @@ msgstr ""
 msgid "Clone the edited entry"
 msgstr ""
 
-#: ../hg-plugins/cloneEntry/_admin.php:38
+#: ../hg-plugins/cloneEntry/_admin.php:40
 msgid "Clone this entry"
 msgstr ""
 
-#: ../hg-plugins/cloneEntry/index.php:92
+#: ../hg-plugins/cloneEntry/_admin.php:45
+msgid "The status of the new entry will be set to pending."
+msgstr ""
+
+#: ../hg-plugins/cloneEntry/index.php:105
 msgid "Entry has been successfully cloned."
 msgstr ""
 
-#: ../hg-plugins/cloneEntry/index.php:146
+#: ../hg-plugins/cloneEntry/index.php:159
 msgid "Enable Cloning of post for this blog"
 msgstr ""
 
-#: ../hg-plugins/cloneEntry/index.php:150
+#: ../hg-plugins/cloneEntry/index.php:163
 msgid "Enable Cloning of page for this blog"
 msgstr ""

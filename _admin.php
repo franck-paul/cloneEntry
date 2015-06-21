@@ -21,9 +21,9 @@ $_menu['Blog']->addItem(__('Clone Entry'),'plugin.php?p=cloneEntry','index.php?p
 		$core->auth->check('page,contentadmin',$core->blog->id));
 
 // Add behaviour callback for post
-$core->addBehavior('adminPostForm',array('adminCloneEntry','clonePost'));
+$core->addBehavior('adminPostAfterForm',array('adminCloneEntry','clonePost'));
 // Add behaviour callback for page
-$core->addBehavior('adminPageForm',array('adminCloneEntry','clonePage'));
+$core->addBehavior('adminPageAfterForm',array('adminCloneEntry','clonePage'));
 
 class adminCloneEntry
 {
@@ -34,14 +34,17 @@ class adminCloneEntry
 		if ($post != null) {
 			// Display clone button
 			$res =
+				'<div id="clone-entry" class="clear">'."\n".
 				'<form action="'.$core->adminurl->get('admin.plugin.cloneEntry').'" method="post" id="clone-form">'."\n".
-				'<p class="top-add">'."\n".
+				'<p class="xtop-add">'."\n".
 				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="button add" />'."\n".
 				form::hidden('id',$post->post_id)."\n".
 				form::hidden('type',$post->post_type)."\n".
 				$core->formNonce()."\n".
 				'</p>'."\n".
-				'</form>'."\n";
+				'<p class="form-note">'.__('The status of the new entry will be set to Pending.').'</p>'."\n".
+				'</form>'."\n".
+				'</div>'."\n";
 			echo $res;
 		}
 	}
