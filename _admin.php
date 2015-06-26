@@ -25,8 +25,21 @@ $core->addBehavior('adminPostAfterForm',array('adminCloneEntry','clonePost'));
 // Add behaviour callback for page
 $core->addBehavior('adminPageAfterForm',array('adminCloneEntry','clonePage'));
 
+// Add behaviour callback for button style
+$core->addBehavior('adminPageHTMLHead',array('adminCloneEntry','adminCssLink'));
+
 class adminCloneEntry
 {
+	public static function adminCssLink()
+	{
+		global $core;
+
+		echo
+			'<link rel="stylesheet" href="'.
+			$core->blog->getQmarkURL().'pf='.basename(dirname(__FILE__)).'/style.css'.
+			'" type="text/css" media="screen" />'."\n";
+	}
+
 	static function cloneEntry($post)
 	{
 		global $core;
@@ -37,7 +50,7 @@ class adminCloneEntry
 				'<div id="clone-entry" class="clear">'."\n".
 				'<form action="'.$core->adminurl->get('admin.plugin.cloneEntry').'" method="post" id="clone-form">'."\n".
 				'<p class="xtop-add">'."\n".
-				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="start" />'."\n".
+				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="clone" />'."\n".
 				form::hidden('id',$post->post_id)."\n".
 				form::hidden('type',$post->post_type)."\n".
 				$core->formNonce()."\n".

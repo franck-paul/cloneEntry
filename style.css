@@ -1,0 +1,21 @@
+/* Clone bButton style */
+
+input[type=submit].clone, input.clone, a.button.clone {
+	color: #7e2999;
+	background-color: #EAEAEA;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#EAEAEA));
+	background-image: linear-gradient(#f9f9f9,#EAEAEA);
+	background-repeat: repeat-x;
+	border-color: #dfdfdf #dfdfdf #C5C5C5;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+input[type=submit].clone:hover, input.clone:hover, a.button.clone:hover,
+	input[type=submit].clone:focus, input.clone:focus, a.button.clone:focus {
+	color: #FFFFFF;
+	background-color: #7e2999;
+	background-image: -webkit-gradient( linear, left top, left bottom, from(#b456d2), to(#7e2999));
+	background-image: linear-gradient(#b456d2, #7e2999);
+	background-repeat: repeat-x;
+	border-color: #9f34c1;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+	}
