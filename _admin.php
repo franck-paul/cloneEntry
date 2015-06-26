@@ -37,7 +37,7 @@ class adminCloneEntry
 				'<div id="clone-entry" class="clear">'."\n".
 				'<form action="'.$core->adminurl->get('admin.plugin.cloneEntry').'" method="post" id="clone-form">'."\n".
 				'<p class="xtop-add">'."\n".
-				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="button add" />'."\n".
+				'<input type="submit" value="'.__('Clone this entry').'" name="clone" class="start" />'."\n".
 				form::hidden('id',$post->post_id)."\n".
 				form::hidden('type',$post->post_type)."\n".
 				$core->formNonce()."\n".
