@@ -14,9 +14,9 @@ if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
 	/* Name */				"Clone Entry",
-	/* Description*/		"Make a clone of the edited entry",
+	/* Description*/		"Make a clone of entry",
 	/* Author */			"Franck Paul",
-	/* Version */			'0.2.1',
+	/* Version */			'0.3',
 	array(
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
 		/* Type */			'type' =>			'plugin',

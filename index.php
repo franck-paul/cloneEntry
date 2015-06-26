@@ -89,13 +89,13 @@ if (!empty($_POST['clone'])) {
 
 		}
 
-		// If old post has meta data, duplicate them too
+		// If old entry has meta data, duplicate them too
 		$meta = $core->meta->getMetadata(array('post_id' => $post_id));
 		while ($meta->fetch()) {
 			$core->meta->setPostMeta($return_id,$meta->meta_type,$meta->meta_id);
 		}
 
-		// If old post has attached media, duplicate them too
+		// If old entry has attached media, duplicate them too
 		$postmedia = new dcPostMedia($core);
 		$media = $postmedia->getPostMedia(array('post_id' => $post_id));
 		while ($media->fetch()) {

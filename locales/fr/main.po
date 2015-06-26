@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 cloneEntry module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-21 09:06+0200\n"
+"POT-Creation-Date: 2015-06-26 12:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,14 +19,29 @@ msgstr ""
 msgid "Clone Entry"
 msgstr "Duplication d'entrée"
 
-msgid "Clone the edited entry"
-msgstr "Dupliquer l'entrée en cours d'édition"
+msgid "Make a clone of entry"
+msgstr "Dupliquer une entrée"
 
 msgid "Clone this entry"
 msgstr "Dupliquer cette entrée"
 
-msgid "The status of the new entry will be set to Pending."
-msgstr "Le statut de la nouvelle entrée sera positionné à En attente"
+msgid "The status of the new entry will be set <strong>to Pending</strong>."
+msgstr "Le statut de la nouvelle entrée sera positionné à <strong>En attente</strong>"
+
+msgid "It's date and time will bet set to now and it's URL would reflect this."
+msgstr "Ses date et heure seront positionnées à maintenant et son URL devrait refléter ceci."
+
+msgid "The category, tags, attachments and other properties will be preserved."
+msgstr "Les catégorie, mots-clés, pièces-jointes et autres propriétés seront préservées."
+
+msgid "Clone"
+msgstr "Dupliquer"
+
+msgid "Clone selected posts"
+msgstr "Dupliquer les billets sélectionnés"
+
+msgid "Clone selected pages"
+msgstr "Dupliquer les pages sélectionnées"
 
 msgid "Entry has been successfully cloned."
 msgstr "L'entrée a été dupliquée."
