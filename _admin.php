@@ -16,9 +16,12 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 __('Clone Entry').__('Make a clone of entry');
 
 // Add menu item in blog menu
-$_menu['Blog']->addItem(__('Clone Entry'),'plugin.php?p=cloneEntry','index.php?pf=cloneEntry/icon.png',
-		preg_match('/plugin.php\?p=cloneEntry(&.*)?$/',$_SERVER['REQUEST_URI']),
-		$core->auth->check('page,contentadmin',$core->blog->id));
+$_menu['Blog']->addItem(
+	__('Clone Entry'),
+	'plugin.php?p=cloneEntry',
+	urldecode(dcPage::getPF('cloneEntry/icon.png')),
+	preg_match('/plugin.php\?p=cloneEntry(&.*)?$/',$_SERVER['REQUEST_URI']),
+	$core->auth->check('page,contentadmin',$core->blog->id));
 
 // Add behaviour callback for post
 $core->addBehavior('adminPostAfterForm',array('adminCloneEntry','clonePost'));
@@ -38,10 +41,7 @@ class adminCloneEntry
 	{
 		global $core;
 
-		echo
-			'<link rel="stylesheet" href="'.
-			$core->blog->getQmarkURL().'pf='.basename(dirname(__FILE__)).'/style.css'.
-			'" type="text/css" media="screen" />'."\n";
+		echo dcPage::cssLoad(urldecode(dcPage::getPF('cloneEntry/style.css')),'screen',$core->getVersion('cloneEntry'))."\n";
 	}
 
 	static function cloneEntry($post)
