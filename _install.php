@@ -1,41 +1,41 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-# This file is part of cloneEntry, a plugin for Dotclear 2.
-#
-# Copyright (c) Franck Paul and contributors
-# carnet.franck.paul@gmail.com
-#
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief cloneEntry, a plugin for Dotclear 2
+ *
+ * @package Dotclear
+ * @subpackage Plugins
+ *
+ * @author Franck Paul and contributors
+ *
+ * @copyright Franck Paul carnet.franck.paul@gmail.com
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
-if (!defined('DC_CONTEXT_ADMIN')) { return; }
+if (!defined('DC_CONTEXT_ADMIN')) {return;}
 
-$new_version = $core->plugins->moduleInfo('cloneEntry','version');
+$new_version = $core->plugins->moduleInfo('cloneEntry', 'version');
 $old_version = $core->getVersion('cloneEntry');
 
-if (version_compare($old_version,$new_version,'>=')) return;
+if (version_compare($old_version, $new_version, '>=')) {
+    return;
+}
 
 try
 {
-	if (version_compare(DC_VERSION,'2.7','<'))
-	{
-		throw new Exception('Clone Entry requires Dotclear 2.7');
-	}
+    if (version_compare(DC_VERSION, '2.7', '<')) {
+        throw new Exception('Clone Entry requires Dotclear 2.7');
+    }
 
-	$core->blog->settings->addNamespace('cloneentry');
+    $core->blog->settings->addNamespace('cloneentry');
 
-	// Default state is active
-	$core->blog->settings->cloneentry->put('ce_active_post',true,'boolean','Active for posts',false,true);
-	$core->blog->settings->cloneentry->put('ce_active_page',true,'boolean','Active for pages',false,true);
+    // Default state is active
+    $core->blog->settings->cloneentry->put('ce_active_post', true, 'boolean', 'Active for posts', false, true);
+    $core->blog->settings->cloneentry->put('ce_active_page', true, 'boolean', 'Active for pages', false, true);
 
-	$core->setVersion('cloneEntry',$new_version);
+    $core->setVersion('cloneEntry', $new_version);
 
-	return true;
-}
-catch (Exception $e)
-{
-	$core->error->add($e->getMessage());
+    return true;
+} catch (Exception $e) {
+    $core->error->add($e->getMessage());
 }
 return false;
