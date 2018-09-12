@@ -90,14 +90,14 @@ if (!empty($_POST['clone'])) {
         }
 
         // If old entry has meta data, duplicate them too
-        $meta = $core->meta->getMetadata(array('post_id' => $post_id));
+        $meta = $core->meta->getMetadata(['post_id' => $post_id]);
         while ($meta->fetch()) {
             $core->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
         }
 
         // If old entry has attached media, duplicate them too
         $postmedia = new dcPostMedia($core);
-        $media     = $postmedia->getPostMedia(array('post_id' => $post_id));
+        $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
         while ($media->fetch()) {
             $postmedia->addPostMedia($return_id, $media->media_id);
         }
@@ -140,10 +140,10 @@ if (!empty($_POST['saveconfig'])) {
 <body>
 <?php
 echo dcPage::breadcrumb(
-    array(
+    [
         html::escapeHTML($core->blog->name) => '',
         __('Clone Entry')                   => ''
-    ));
+    ]);
 ?>
 
 <?php if (!empty($msg)) {

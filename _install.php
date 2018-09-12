@@ -22,10 +22,6 @@ if (version_compare($old_version, $new_version, '>=')) {
 
 try
 {
-    if (version_compare(DC_VERSION, '2.7', '<')) {
-        throw new Exception('Clone Entry requires Dotclear 2.7');
-    }
-
     $core->blog->settings->addNamespace('cloneentry');
 
     // Default state is active

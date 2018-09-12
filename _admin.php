@@ -25,16 +25,16 @@ $_menu['Blog']->addItem(
     $core->auth->check('page,contentadmin', $core->blog->id));
 
 // Add behaviour callback for post
-$core->addBehavior('adminPostAfterForm', array('adminCloneEntry', 'clonePost'));
+$core->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost']);
 // Add behaviour callback for page
-$core->addBehavior('adminPageAfterForm', array('adminCloneEntry', 'clonePage'));
+$core->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
 
 /* Add behavior callbacks for posts actions */
-$core->addBehavior('adminPostsActionsPage', array('adminCloneEntry', 'clonePosts'));
-$core->addBehavior('adminPagesActionsPage', array('adminCloneEntry', 'clonePages'));
+$core->addBehavior('adminPostsActionsPage', ['adminCloneEntry', 'clonePosts']);
+$core->addBehavior('adminPagesActionsPage', ['adminCloneEntry', 'clonePages']);
 
 // Add behaviour callback for button style
-$core->addBehavior('adminPageHTMLHead', array('adminCloneEntry', 'adminCssLink'));
+$core->addBehavior('adminPageHTMLHead', ['adminCloneEntry', 'adminCssLink']);
 
 class adminCloneEntry
 {
@@ -98,8 +98,8 @@ class adminCloneEntry
             // Add menuitem in actions dropdown list
             if ($core->auth->check('contentadmin', $core->blog->id)) {
                 $ap->addAction(
-                    array(__('Clone') => array(__('Clone selected posts') => 'clone')),
-                    array('adminCloneEntry', 'doClonePosts')
+                    [__('Clone') => [__('Clone selected posts') => 'clone']],
+                    ['adminCloneEntry', 'doClonePosts']
                 );
             }
         }
@@ -114,8 +114,8 @@ class adminCloneEntry
             // Add menuitem in actions dropdown list
             if ($core->auth->check('contentadmin', $core->blog->id)) {
                 $ap->addAction(
-                    array(__('Clone') => array(__('Clone selected pages') => 'clone')),
-                    array('adminCloneEntry', 'doClonePages')
+                    [__('Clone') => [__('Clone selected pages') => 'clone']],
+                    ['adminCloneEntry', 'doClonePages']
                 );
             }
         }
@@ -193,19 +193,19 @@ class adminCloneEntry
                     }
 
                     // If old entry has meta data, duplicate them too
-                    $meta = $core->meta->getMetadata(array('post_id' => $post_id));
+                    $meta = $core->meta->getMetadata(['post_id' => $post_id]);
                     while ($meta->fetch()) {
                         $core->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
                     }
 
                     // If old entry has attached media, duplicate them too
                     $postmedia = new dcPostMedia($core);
-                    $media     = $postmedia->getPostMedia(array('post_id' => $post_id));
+                    $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                     while ($media->fetch()) {
                         $postmedia->addPostMedia($return_id, $media->media_id);
                     }
                 }
-                $ap->redirect(true, array('upd' => 1));
+                $ap->redirect(true, ['upd' => 1]);
             } else {
                 $ap->redirect();
             }
@@ -214,19 +214,19 @@ class adminCloneEntry
             if ($type == 'page') {
                 $ap->beginPage(
                     dcPage::breadcrumb(
-                        array(
+                        [
                             html::escapeHTML($core->blog->name) => '',
                             __('Pages')                         => 'plugin.php?p=pages',
                             __('Clone selected pages')          => ''
-                        )));
+                        ]));
             } else {
                 $ap->beginPage(
                     dcPage::breadcrumb(
-                        array(
+                        [
                             html::escapeHTML($core->blog->name) => '',
                             __('Entries')                       => 'posts.php',
                             __('Clone selected posts')          => ''
-                        )));
+                        ]));
             }
 
             echo
@@ -239,8 +239,8 @@ class adminCloneEntry
             __('The category, tags, attachments and other properties will be preserved.') . '</p>' . "\n" .
 
             $core->formNonce() . $ap->getHiddenFields() .
-            form::hidden(array('full_content'), 'true') .
-            form::hidden(array('action'), 'clone') .
+            form::hidden(['full_content'], 'true') .
+            form::hidden(['action'], 'clone') .
                 '</form>';
             $ap->endPage();
 

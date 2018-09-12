@@ -17,10 +17,11 @@ $this->registerModule(
     "Clone Entry",           // Name
     "Make a clone of entry", // Description
     "Franck Paul",           // Author
-    '0.3',                   // Version
-    array(
+    '0.4',                   // Version
+    [
+        'requires'    => [['core', '2.13']],   // Dependencies
         'permissions' => 'usage,contentadmin', // Permissions
         'type'        => 'plugin',             // Type
         'priority'    => 2000                 // Priority
-    )
+    ]
 );
