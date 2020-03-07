@@ -56,8 +56,8 @@ class adminCloneEntry
             '<form action="' . $core->adminurl->get('admin.plugin.cloneEntry') . '" method="post" id="clone-form">' . "\n" .
             '<p>' . "\n" .
             '<input type="submit" value="' . __('Clone this entry') . '" name="clone" class="clone" />' . "\n" .
-            form::hidden('id', $post->post_id) . "\n" .
-            form::hidden('type', $post->post_type) . "\n" .
+            form::hidden('clone_id', $post->post_id) . "\n" .
+            form::hidden('clone_type', $post->post_type) . "\n" .
             $core->formNonce() . "\n" .
             '</p>' . "\n" .
             '<p class="form-note">' . __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' . "\n" .
