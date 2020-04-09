@@ -22,8 +22,8 @@ $ce_active_page = (boolean) $core->blog->settings->cloneentry->ce_active_page;
 if (!empty($_POST['clone'])) {
     try
     {
-        $post_id   = $_POST['id'];
-        $post_type = $_POST['type'];
+        $post_id   = $_POST['clone_id'];
+        $post_type = $_POST['clone_type'];
 
         // Duplicate entry
 

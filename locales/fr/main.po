@@ -17,16 +17,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Clone Entry"
-msgstr "Duplication d'entrée"
+msgstr "Duplication de publication"
 
 msgid "Make a clone of entry"
-msgstr "Dupliquer une entrée"
+msgstr "Dupliquer une publication"
 
 msgid "Clone this entry"
-msgstr "Dupliquer cette entrée"
+msgstr "Dupliquer cette publication"
 
 msgid "The status of the new entry will be set <strong>to Pending</strong>."
-msgstr "Le statut de la nouvelle entrée sera positionné à <strong>En attente</strong>"
+msgstr "Le statut de la nouvelle publication sera positionné à <strong>En attente</strong>"
 
 msgid "It's date and time will bet set to now and it's URL would reflect this."
 msgstr "Ses date et heure seront positionnées à maintenant et son URL devrait refléter ceci."
@@ -44,7 +44,7 @@ msgid "Clone selected pages"
 msgstr "Dupliquer les pages sélectionnées"
 
 msgid "Entry has been successfully cloned."
-msgstr "L'entrée a été dupliquée."
+msgstr "La publication a été dupliquée."
 
 msgid "Enable Cloning of post for this blog"
 msgstr "Activer la duplication de billet pour ce blog"
