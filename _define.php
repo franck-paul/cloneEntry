@@ -17,9 +17,9 @@ $this->registerModule(
     "Clone Entry",           // Name
     "Make a clone of entry", // Description
     "Franck Paul",           // Author
-    '0.4',                   // Version
+    '0.5',                   // Version
     [
-        'requires'    => [['core', '2.16']],                          // Dependencies
+        'requires'    => [['core', '2.17']],                          // Dependencies
         'permissions' => 'usage,contentadmin',                        // Permissions
         'type'        => 'plugin',                                    // Type
         'priority'    => 2000,                                        // Priority

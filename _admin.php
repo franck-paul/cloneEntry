@@ -33,18 +33,8 @@ $core->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
 $core->addBehavior('adminPostsActionsPage', ['adminCloneEntry', 'clonePosts']);
 $core->addBehavior('adminPagesActionsPage', ['adminCloneEntry', 'clonePages']);
 
-// Add behaviour callback for button style
-$core->addBehavior('adminPageHTMLHead', ['adminCloneEntry', 'adminCssLink']);
-
 class adminCloneEntry
 {
-    public static function adminCssLink()
-    {
-        global $core;
-
-        echo dcPage::cssLoad(urldecode(dcPage::getPF('cloneEntry/style.css')), 'screen', $core->getVersion('cloneEntry')) . "\n";
-    }
-
     public static function cloneEntry($post)
     {
         global $core;
