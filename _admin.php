@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_CONTEXT_ADMIN')) {return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return;
+}
 
 // dead but useful code, in order to have translations
 __('Clone Entry') . __('Make a clone of entry');
@@ -41,8 +42,7 @@ class adminCloneEntry
 
         if ($post != null) {
             // Display clone button
-            $res =
-            '<div id="clone-entry" class="clear">' . "\n" .
+            $res = '<div id="clone-entry" class="clear">' . "\n" .
             '<form action="' . $core->adminurl->get('admin.plugin.cloneEntry') . '" method="post" id="clone-form">' . "\n" .
             '<p>' . "\n" .
             '<input type="submit" value="' . __('Clone this entry') . '" name="clone" class="clone" />' . "\n" .
@@ -123,8 +123,6 @@ class adminCloneEntry
 
     public static function doCloneEntries($core, dcPostsActionsPage $ap, $post, $type = 'post')
     {
-        global $page_url_format;
-
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
             if ($posts->rows()) {
@@ -136,7 +134,7 @@ class adminCloneEntry
 
                     if ($type == 'page') {
                         # Magic tweak :)
-                        $core->blog->settings->system->post_url_format = $page_url_format;
+                        $core->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
                     }
 
                     // Duplicate entry contents and options
@@ -169,7 +167,6 @@ class adminCloneEntry
 
                         # --BEHAVIOR-- adminAfterPostCreate
                         $core->callBehavior('adminAfterPostCreate', $cur, $return_id);
-
                     } else {
 
                         # --BEHAVIOR-- adminBeforePageCreate
@@ -179,7 +176,6 @@ class adminCloneEntry
 
                         # --BEHAVIOR-- adminAfterPageCreate
                         $core->callBehavior('adminAfterPageCreate', $cur, $return_id);
-
                     }
 
                     // If old entry has meta data, duplicate them too
@@ -233,7 +229,6 @@ class adminCloneEntry
             form::hidden(['action'], 'clone') .
                 '</form>';
             $ap->endPage();
-
         }
     }
 }

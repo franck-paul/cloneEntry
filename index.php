@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_CONTEXT_ADMIN')) {return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return;
+}
 
 // Getting current parameters
 $core->blog->settings->addNamespace('cloneentry');
@@ -20,8 +21,7 @@ $ce_active_page = (boolean) $core->blog->settings->cloneentry->ce_active_page;
 
 // Cloning entry
 if (!empty($_POST['clone'])) {
-    try
-    {
+    try {
         $post_id   = $_POST['clone_id'];
         $post_type = $_POST['clone_type'];
 
@@ -43,7 +43,7 @@ if (!empty($_POST['clone'])) {
 
         if ($post_type == 'page') {
             # Magic tweak :)
-            $core->blog->settings->system->post_url_format = $page_url_format;
+            $core->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
         }
 
         // Duplicate entry contents and options
@@ -76,7 +76,6 @@ if (!empty($_POST['clone'])) {
 
             # --BEHAVIOR-- adminAfterPostCreate
             $core->callBehavior('adminAfterPostCreate', $cur, $return_id);
-
         } else {
 
             # --BEHAVIOR-- adminBeforePageCreate
@@ -86,7 +85,6 @@ if (!empty($_POST['clone'])) {
 
             # --BEHAVIOR-- adminAfterPageCreate
             $core->callBehavior('adminAfterPageCreate', $cur, $return_id);
-
         }
 
         // If old entry has meta data, duplicate them too
@@ -117,8 +115,7 @@ dcPage::check('pages,contentadmin');
 
 // Saving new configuration
 if (!empty($_POST['saveconfig'])) {
-    try
-    {
+    try {
         $core->blog->settings->addNamespace('cloneentry');
 
         $ce_active_post = (empty($_POST['active_post'])) ? false : true;
