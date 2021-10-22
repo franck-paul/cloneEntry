@@ -1,0 +1,12 @@
+<modules xmlns:da="http://dotaddict.org/da/">
+  <module id="cloneEntry">
+    <name>Clone Entry</name>
+    <version>0.6</version>
+    <author>Franck Paul</author>
+    <desc>Make a clone of entry</desc>
+    <file>https://github.com/franck-paul/cloneEntry/releases/download/0.6/plugin-cloneEntry.zip</file>
+    <da:dcmin>2.19</da:dcmin>
+    <da:details>https://open-time.net/?q=cloneEntry</da:details>
+    <da:support>https://github.com/franck-paul/cloneEntry</da:support>
+  </module>
+</modules>
