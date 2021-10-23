@@ -24,9 +24,11 @@ $this->registerModule(
         'permissions' => 'usage,contentadmin',                        // Permissions
         'type'        => 'plugin',                                    // Type
         'priority'    => 2000,                                        // Priority
-        'details'     => 'https://open-time.net/?q=cloneEntry',       // Details URL
-        'support'     => 'https://github.com/franck-paul/cloneEntry', // Support URL
         'settings'    => [
-        ]
+        ],
+
+        'details'    => 'https://open-time.net/?q=cloneEntry',       // Details URL
+        'support'    => 'https://github.com/franck-paul/cloneEntry', // Support URL
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/main/dcstore.xml'
     ]
 );
