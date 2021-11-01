@@ -29,6 +29,6 @@ $this->registerModule(
 
         'details'    => 'https://open-time.net/?q=cloneEntry',       // Details URL
         'support'    => 'https://github.com/franck-paul/cloneEntry', // Support URL
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/main/dcstore.xml'
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/master/dcstore.xml'
     ]
 );
