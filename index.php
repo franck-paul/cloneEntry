@@ -16,8 +16,8 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 // Getting current parameters
 $core->blog->settings->addNamespace('cloneentry');
-$ce_active_post = (boolean) $core->blog->settings->cloneentry->ce_active_post;
-$ce_active_page = (boolean) $core->blog->settings->cloneentry->ce_active_page;
+$ce_active_post = (bool) $core->blog->settings->cloneentry->ce_active_post;
+$ce_active_page = (bool) $core->blog->settings->cloneentry->ce_active_page;
 
 // Cloning entry
 if (!empty($_POST['clone'])) {
@@ -60,9 +60,9 @@ if (!empty($_POST['clone'])) {
         $cur->post_content_xhtml = $post->post_content_xhtml;
         $cur->post_notes         = $post->post_notes;
         $cur->post_position      = $post->post_position;
-        $cur->post_open_comment  = (integer) $post->post_open_comment;
-        $cur->post_open_tb       = (integer) $post->post_open_tb;
-        $cur->post_selected      = (integer) $post->post_selected;
+        $cur->post_open_comment  = (int) $post->post_open_comment;
+        $cur->post_open_tb       = (int) $post->post_open_tb;
+        $cur->post_selected      = (int) $post->post_selected;
 
         $cur->post_status = -2; // forced to pending
         $cur->user_id     = $core->auth->userID();
@@ -139,8 +139,9 @@ if (!empty($_POST['saveconfig'])) {
 echo dcPage::breadcrumb(
     [
         html::escapeHTML($core->blog->name) => '',
-        __('Clone Entry')                   => ''
-    ]);
+        __('Clone Entry')                   => '',
+    ]
+);
 ?>
 
 <?php if (!empty($msg)) {

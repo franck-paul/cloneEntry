@@ -21,9 +21,10 @@ __('Clone Entry') . __('Make a clone of entry');
 $_menu['Blog']->addItem(
     __('Clone Entry'),
     'plugin.php?p=cloneEntry',
-    urldecode(dcPage::getPF('cloneEntry/icon.png')),
+    [urldecode(dcPage::getPF('cloneEntry/icon.svg')), urldecode(dcPage::getPF('cloneEntry/icon-dark.svg'))],
     preg_match('/plugin.php\?p=cloneEntry(&.*)?$/', $_SERVER['REQUEST_URI']),
-    $core->auth->check('page,contentadmin', $core->blog->id));
+    $core->auth->check('page,contentadmin', $core->blog->id)
+);
 
 // Add behaviour callback for post
 $core->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost']);
@@ -151,9 +152,9 @@ class adminCloneEntry
                     $cur->post_content_xhtml = $posts->post_content_xhtml;
                     $cur->post_notes         = $posts->post_notes;
                     $cur->post_position      = $posts->post_position;
-                    $cur->post_open_comment  = (integer) $posts->post_open_comment;
-                    $cur->post_open_tb       = (integer) $posts->post_open_tb;
-                    $cur->post_selected      = (integer) $posts->post_selected;
+                    $cur->post_open_comment  = (int) $posts->post_open_comment;
+                    $cur->post_open_tb       = (int) $posts->post_open_tb;
+                    $cur->post_selected      = (int) $posts->post_selected;
 
                     $cur->post_status = -2; // forced to pending
                     $cur->user_id     = $core->auth->userID();
@@ -203,16 +204,20 @@ class adminCloneEntry
                         [
                             html::escapeHTML($core->blog->name) => '',
                             __('Pages')                         => 'plugin.php?p=pages',
-                            __('Clone selected pages')          => ''
-                        ]));
+                            __('Clone selected pages')          => '',
+                        ]
+                    )
+                );
             } else {
                 $ap->beginPage(
                     dcPage::breadcrumb(
                         [
                             html::escapeHTML($core->blog->name) => '',
                             __('Entries')                       => 'posts.php',
-                            __('Clone selected posts')          => ''
-                        ]));
+                            __('Clone selected posts')          => '',
+                        ]
+                    )
+                );
             }
 
             echo

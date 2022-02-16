@@ -18,9 +18,9 @@ $this->registerModule(
     'Clone Entry',           // Name
     'Make a clone of entry', // Description
     'Franck Paul',           // Author
-    '0.6',                   // Version
+    '1.0',                   // Version
     [
-        'requires'    => [['core', '2.19']],                          // Dependencies
+        'requires'    => [['core', '2.21']],                          // Dependencies
         'permissions' => 'usage,contentadmin',                        // Permissions
         'type'        => 'plugin',                                    // Type
         'priority'    => 2000,                                        // Priority
@@ -29,6 +29,6 @@ $this->registerModule(
 
         'details'    => 'https://open-time.net/?q=cloneEntry',       // Details URL
         'support'    => 'https://github.com/franck-paul/cloneEntry', // Support URL
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/master/dcstore.xml'
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/master/dcstore.xml',
     ]
 );
