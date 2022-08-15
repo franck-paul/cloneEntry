@@ -15,9 +15,9 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 // Getting current parameters
-$core->blog->settings->addNamespace('cloneentry');
-$ce_active_post = (bool) $core->blog->settings->cloneentry->ce_active_post;
-$ce_active_page = (bool) $core->blog->settings->cloneentry->ce_active_page;
+dcCore::app()->blog->settings->addNamespace('cloneentry');
+$ce_active_post = (bool) dcCore::app()->blog->settings->cloneentry->ce_active_post;
+$ce_active_page = (bool) dcCore::app()->blog->settings->cloneentry->ce_active_page;
 
 // Cloning entry
 if (!empty($_POST['clone'])) {
@@ -32,18 +32,18 @@ if (!empty($_POST['clone'])) {
         $params['post_type'] = $post_type;
         $params['post_id']   = $post_id;
 
-        $post = $core->blog->getPosts($params);
+        $post = dcCore::app()->blog->getPosts($params);
 
         if ($post->isEmpty()) {
-            $core->error->add(__('This entry does not exist.'));
-            http::redirect($core->getPostAdminURL($post_type, $post_id));
+            dcCore::app()->error->add(__('This entry does not exist.'));
+            http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id));
         }
 
-        $cur = $core->con->openCursor($core->prefix . 'post');
+        $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
 
         if ($post_type == 'page') {
             # Magic tweak :)
-            $core->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
+            dcCore::app()->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
         }
 
         // Duplicate entry contents and options
@@ -65,36 +65,36 @@ if (!empty($_POST['clone'])) {
         $cur->post_selected      = (int) $post->post_selected;
 
         $cur->post_status = -2; // forced to pending
-        $cur->user_id     = $core->auth->userID();
+        $cur->user_id     = dcCore::app()->auth->userID();
 
         if ($post_type == 'post') {
 
             # --BEHAVIOR-- adminBeforePostCreate
-            $core->callBehavior('adminBeforePostCreate', $cur);
+            dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-            $return_id = $core->blog->addPost($cur);
+            $return_id = dcCore::app()->blog->addPost($cur);
 
             # --BEHAVIOR-- adminAfterPostCreate
-            $core->callBehavior('adminAfterPostCreate', $cur, $return_id);
+            dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
         } else {
 
             # --BEHAVIOR-- adminBeforePageCreate
-            $core->callBehavior('adminBeforePageCreate', $cur);
+            dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 
-            $return_id = $core->blog->addPost($cur);
+            $return_id = dcCore::app()->blog->addPost($cur);
 
             # --BEHAVIOR-- adminAfterPageCreate
-            $core->callBehavior('adminAfterPageCreate', $cur, $return_id);
+            dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
         }
 
         // If old entry has meta data, duplicate them too
-        $meta = $core->meta->getMetadata(['post_id' => $post_id]);
+        $meta = dcCore::app()->meta->getMetadata(['post_id' => $post_id]);
         while ($meta->fetch()) {
-            $core->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+            dcCore::app()->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
         }
 
         // If old entry has attached media, duplicate them too
-        $postmedia = new dcPostMedia($core);
+        $postmedia = new dcPostMedia(dcCore::app());
         $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
         while ($media->fetch()) {
             $postmedia->addPostMedia($return_id, $media->media_id);
@@ -103,10 +103,10 @@ if (!empty($_POST['clone'])) {
         dcPage::addSuccessNotice(__('Entry has been successfully cloned.'));
 
         // Go to entry edit page
-        http::redirect($core->getPostAdminURL($post_type, $return_id, false));
+        http::redirect(dcCore::app()->getPostAdminURL($post_type, $return_id, false));
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
-        http::redirect($core->getPostAdminURL($post_type, $post_id, false));
+        dcCore::app()->error->add($e->getMessage());
+        http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id, false));
     }
 }
 
@@ -116,16 +116,16 @@ dcPage::check('pages,contentadmin');
 // Saving new configuration
 if (!empty($_POST['saveconfig'])) {
     try {
-        $core->blog->settings->addNamespace('cloneentry');
+        dcCore::app()->blog->settings->addNamespace('cloneentry');
 
         $ce_active_post = (empty($_POST['active_post'])) ? false : true;
         $ce_active_page = (empty($_POST['active_page'])) ? false : true;
-        $core->blog->settings->cloneentry->put('ce_active_post', $ce_active_post, 'boolean');
-        $core->blog->settings->cloneentry->put('ce_active_page', $ce_active_page, 'boolean');
-        $core->blog->triggerBlog();
+        dcCore::app()->blog->settings->cloneentry->put('ce_active_post', $ce_active_post, 'boolean');
+        dcCore::app()->blog->settings->cloneentry->put('ce_active_page', $ce_active_page, 'boolean');
+        dcCore::app()->blog->triggerBlog();
         $msg = __('Configuration successfully updated.');
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
+        dcCore::app()->error->add($e->getMessage());
     }
 }
 ?>
@@ -138,8 +138,8 @@ if (!empty($_POST['saveconfig'])) {
 <?php
 echo dcPage::breadcrumb(
     [
-        html::escapeHTML($core->blog->name) => '',
-        __('Clone Entry')                   => '',
+        html::escapeHTML(dcCore::app()->blog->name) => '',
+        __('Clone Entry')                           => '',
     ]
 );
 ?>
@@ -161,7 +161,7 @@ echo dcPage::breadcrumb(
   </p>
 
   <p><input type="hidden" name="p" value="cloneEntry" />
-  <?php echo $core->formNonce(); ?>
+  <?php echo dcCore::app()->formNonce(); ?>
   <input type="submit" name="saveconfig" value="<?php echo __('Save configuration'); ?>" />
   </p>
   </form>

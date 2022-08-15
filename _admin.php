@@ -23,33 +23,31 @@ $_menu['Blog']->addItem(
     'plugin.php?p=cloneEntry',
     [urldecode(dcPage::getPF('cloneEntry/icon.svg')), urldecode(dcPage::getPF('cloneEntry/icon-dark.svg'))],
     preg_match('/plugin.php\?p=cloneEntry(&.*)?$/', $_SERVER['REQUEST_URI']),
-    $core->auth->check('page,contentadmin', $core->blog->id)
+    dcCore::app()->auth->check('page,contentadmin', dcCore::app()->blog->id)
 );
 
 // Add behaviour callback for post
-$core->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost']);
+dcCore::app()->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost']);
 // Add behaviour callback for page
-$core->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
+dcCore::app()->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
 
 /* Add behavior callbacks for posts actions */
-$core->addBehavior('adminPostsActionsPage', ['adminCloneEntry', 'clonePosts']);
-$core->addBehavior('adminPagesActionsPage', ['adminCloneEntry', 'clonePages']);
+dcCore::app()->addBehavior('adminPostsActionsPage', ['adminCloneEntry', 'clonePosts']);
+dcCore::app()->addBehavior('adminPagesActionsPage', ['adminCloneEntry', 'clonePages']);
 
 class adminCloneEntry
 {
     public static function cloneEntry($post)
     {
-        global $core;
-
         if ($post != null) {
             // Display clone button
             $res = '<div id="clone-entry" class="clear">' . "\n" .
-            '<form action="' . $core->adminurl->get('admin.plugin.cloneEntry') . '" method="post" id="clone-form">' . "\n" .
+            '<form action="' . dcCore::app()->adminurl->get('admin.plugin.cloneEntry') . '" method="post" id="clone-form">' . "\n" .
             '<p>' . "\n" .
             '<input type="submit" value="' . __('Clone this entry') . '" name="clone" class="clone" />' . "\n" .
             form::hidden('clone_id', $post->post_id) . "\n" .
             form::hidden('clone_type', $post->post_type) . "\n" .
-            $core->formNonce() . "\n" .
+            dcCore::app()->formNonce() . "\n" .
             '</p>' . "\n" .
             '<p class="form-note">' . __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' . "\n" .
             __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' . "\n" .
@@ -62,32 +60,26 @@ class adminCloneEntry
 
     public static function clonePost($post)
     {
-        global $core;
-
-        $core->blog->settings->addNamespace('cloneentry');
-        if ($core->blog->settings->cloneentry->ce_active_post) {
+        dcCore::app()->blog->settings->addNamespace('cloneentry');
+        if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
             adminCloneEntry::cloneEntry($post);
         }
     }
 
     public static function clonePage($post)
     {
-        global $core;
-
-        $core->blog->settings->addNamespace('cloneentry');
-        if ($core->blog->settings->cloneentry->ce_active_page) {
+        dcCore::app()->blog->settings->addNamespace('cloneentry');
+        if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             adminCloneEntry::cloneEntry($post);
         }
     }
 
     public static function clonePosts($core, $ap)
     {
-        global $core;
-
-        $core->blog->settings->addNamespace('cloneentry');
-        if ($core->blog->settings->cloneentry->ce_active_post) {
+        dcCore::app()->blog->settings->addNamespace('cloneentry');
+        if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
             // Add menuitem in actions dropdown list
-            if ($core->auth->check('contentadmin', $core->blog->id)) {
+            if (dcCore::app()->auth->check('contentadmin', dcCore::app()->blog->id)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected posts') => 'clone']],
                     ['adminCloneEntry', 'doClonePosts']
@@ -98,12 +90,10 @@ class adminCloneEntry
 
     public static function clonePages($core, $ap)
     {
-        global $core;
-
-        $core->blog->settings->addNamespace('cloneentry');
-        if ($core->blog->settings->cloneentry->ce_active_page) {
+        dcCore::app()->blog->settings->addNamespace('cloneentry');
+        if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             // Add menuitem in actions dropdown list
-            if ($core->auth->check('contentadmin', $core->blog->id)) {
+            if (dcCore::app()->auth->check('contentadmin', dcCore::app()->blog->id)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected pages') => 'clone']],
                     ['adminCloneEntry', 'doClonePages']
@@ -114,12 +104,12 @@ class adminCloneEntry
 
     public static function doClonePosts($core, dcPostsActionsPage $ap, $post)
     {
-        self::doCloneEntries($core, $ap, $post, 'post');
+        self::doCloneEntries(dcCore::app(), $ap, $post, 'post');
     }
 
     public static function doClonePages($core, dcPostsActionsPage $ap, $post)
     {
-        self::doCloneEntries($core, $ap, $post, 'page');
+        self::doCloneEntries(dcCore::app(), $ap, $post, 'page');
     }
 
     public static function doCloneEntries($core, dcPostsActionsPage $ap, $post, $type = 'post')
@@ -131,11 +121,11 @@ class adminCloneEntry
                     $post_id = $posts->post_id;
 
                     // Prepare new entry
-                    $cur = $core->con->openCursor($core->prefix . 'post');
+                    $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
 
                     if ($type == 'page') {
                         # Magic tweak :)
-                        $core->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
+                        dcCore::app()->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
                     }
 
                     // Duplicate entry contents and options
@@ -157,36 +147,36 @@ class adminCloneEntry
                     $cur->post_selected      = (int) $posts->post_selected;
 
                     $cur->post_status = -2; // forced to pending
-                    $cur->user_id     = $core->auth->userID();
+                    $cur->user_id     = dcCore::app()->auth->userID();
 
                     if ($type == 'post') {
 
                         # --BEHAVIOR-- adminBeforePostCreate
-                        $core->callBehavior('adminBeforePostCreate', $cur);
+                        dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-                        $return_id = $core->blog->addPost($cur);
+                        $return_id = dcCore::app()->blog->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPostCreate
-                        $core->callBehavior('adminAfterPostCreate', $cur, $return_id);
+                        dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
                     } else {
 
                         # --BEHAVIOR-- adminBeforePageCreate
-                        $core->callBehavior('adminBeforePageCreate', $cur);
+                        dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 
-                        $return_id = $core->blog->addPost($cur);
+                        $return_id = dcCore::app()->blog->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPageCreate
-                        $core->callBehavior('adminAfterPageCreate', $cur, $return_id);
+                        dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
                     }
 
                     // If old entry has meta data, duplicate them too
-                    $meta = $core->meta->getMetadata(['post_id' => $post_id]);
+                    $meta = dcCore::app()->meta->getMetadata(['post_id' => $post_id]);
                     while ($meta->fetch()) {
-                        $core->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                        dcCore::app()->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
                     }
 
                     // If old entry has attached media, duplicate them too
-                    $postmedia = new dcPostMedia($core);
+                    $postmedia = new dcPostMedia(dcCore::app());
                     $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                     while ($media->fetch()) {
                         $postmedia->addPostMedia($return_id, $media->media_id);
@@ -202,9 +192,9 @@ class adminCloneEntry
                 $ap->beginPage(
                     dcPage::breadcrumb(
                         [
-                            html::escapeHTML($core->blog->name) => '',
-                            __('Pages')                         => 'plugin.php?p=pages',
-                            __('Clone selected pages')          => '',
+                            html::escapeHTML(dcCore::app()->blog->name) => '',
+                            __('Pages')                                 => 'plugin.php?p=pages',
+                            __('Clone selected pages')                  => '',
                         ]
                     )
                 );
@@ -212,9 +202,9 @@ class adminCloneEntry
                 $ap->beginPage(
                     dcPage::breadcrumb(
                         [
-                            html::escapeHTML($core->blog->name) => '',
-                            __('Entries')                       => 'posts.php',
-                            __('Clone selected posts')          => '',
+                            html::escapeHTML(dcCore::app()->blog->name) => '',
+                            __('Entries')                               => 'posts.php',
+                            __('Clone selected posts')                  => '',
                         ]
                     )
                 );
@@ -229,7 +219,7 @@ class adminCloneEntry
             __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' . "\n" .
             __('The category, tags, attachments and other properties will be preserved.') . '</p>' . "\n" .
 
-            $core->formNonce() . $ap->getHiddenFields() .
+            dcCore::app()->formNonce() . $ap->getHiddenFields() .
             form::hidden(['full_content'], 'true') .
             form::hidden(['action'], 'clone') .
                 '</form>';
