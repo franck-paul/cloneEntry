@@ -18,7 +18,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 __('Clone Entry') . __('Make a clone of entry');
 
 // Add menu item in blog menu
-$_menu['Blog']->addItem(
+dcCore::app()->menu['Blog']->addItem(
     __('Clone Entry'),
     'plugin.php?p=cloneEntry',
     [urldecode(dcPage::getPF('cloneEntry/icon.svg')), urldecode(dcPage::getPF('cloneEntry/icon-dark.svg'))],
@@ -125,7 +125,7 @@ class adminCloneEntry
 
                     if ($type == 'page') {
                         # Magic tweak :)
-                        dcCore::app()->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
+                        dcCore::app()->blog->settings->system->post_url_format = '{t}';
                     }
 
                     // Duplicate entry contents and options

@@ -43,7 +43,7 @@ if (!empty($_POST['clone'])) {
 
         if ($post_type == 'page') {
             # Magic tweak :)
-            dcCore::app()->blog->settings->system->post_url_format = $GLOBALS['page_url_format'];
+            dcCore::app()->blog->settings->system->post_url_format = '{t}';
         }
 
         // Duplicate entry contents and options
