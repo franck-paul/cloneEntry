@@ -32,8 +32,8 @@ dcCore::app()->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost'
 dcCore::app()->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
 
 /* Add behavior callbacks for posts actions */
-dcCore::app()->addBehavior('adminPostsActionsPage', ['adminCloneEntry', 'clonePosts']);
-dcCore::app()->addBehavior('adminPagesActionsPage', ['adminCloneEntry', 'clonePages']);
+dcCore::app()->addBehavior('adminPostsActions', ['adminCloneEntry', 'clonePosts']);
+dcCore::app()->addBehavior('adminPagesActions', ['adminCloneEntry', 'clonePages']);
 
 class adminCloneEntry
 {
@@ -74,7 +74,7 @@ class adminCloneEntry
         }
     }
 
-    public static function clonePosts($core, $ap)
+    public static function clonePosts(dcPostsActions $ap)
     {
         dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
@@ -88,7 +88,7 @@ class adminCloneEntry
         }
     }
 
-    public static function clonePages($core, $ap)
+    public static function clonePages(dcPagesActions $ap)
     {
         dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
@@ -102,17 +102,17 @@ class adminCloneEntry
         }
     }
 
-    public static function doClonePosts($core, dcPostsActionsPage $ap, $post)
+    public static function doClonePosts(dcPostsActions $ap, arrayObject $post)
     {
-        self::doCloneEntries(dcCore::app(), $ap, $post, 'post');
+        self::doCloneEntries($ap, $post, 'post');
     }
 
-    public static function doClonePages($core, dcPostsActionsPage $ap, $post)
+    public static function doClonePages(dcPagesActions $ap, arrayObject $post)
     {
-        self::doCloneEntries(dcCore::app(), $ap, $post, 'page');
+        self::doCloneEntries($ap, $post, 'page');
     }
 
-    public static function doCloneEntries($core, dcPostsActionsPage $ap, $post, $type = 'post')
+    public static function doCloneEntries($ap, arrayObject $post, $type = 'post')
     {
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
