@@ -94,7 +94,7 @@ if (!empty($_POST['clone'])) {
         }
 
         // If old entry has attached media, duplicate them too
-        $postmedia = new dcPostMedia(dcCore::app());
+        $postmedia = new dcPostMedia();
         $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
         while ($media->fetch()) {
             $postmedia->addPostMedia($return_id, $media->media_id);
@@ -111,7 +111,10 @@ if (!empty($_POST['clone'])) {
 }
 
 // Next is for admin only
-dcPage::check('pages,contentadmin');
+dcPage::check(dcCore::app()->auth->makePermissions([
+    dcPages::PERMISSION_PAGES,
+    dcAuth::PERMISSION_CONTENT_ADMIN,
+]));
 
 // Saving new configuration
 if (!empty($_POST['saveconfig'])) {

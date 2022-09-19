@@ -176,7 +176,7 @@ class adminCloneEntry
                     }
 
                     // If old entry has attached media, duplicate them too
-                    $postmedia = new dcPostMedia(dcCore::app());
+                    $postmedia = new dcPostMedia();
                     $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                     while ($media->fetch()) {
                         $postmedia->addPostMedia($return_id, $media->media_id);
