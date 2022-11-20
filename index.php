@@ -64,11 +64,10 @@ if (!empty($_POST['clone'])) {
         $cur->post_open_tb       = (int) $post->post_open_tb;
         $cur->post_selected      = (int) $post->post_selected;
 
-        $cur->post_status = -2; // forced to pending
+        $cur->post_status = dcBlog::POST_PENDING; // forced to pending
         $cur->user_id     = dcCore::app()->auth->userID();
 
         if ($post_type == 'post') {
-
             # --BEHAVIOR-- adminBeforePostCreate
             dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
@@ -77,7 +76,6 @@ if (!empty($_POST['clone'])) {
             # --BEHAVIOR-- adminAfterPostCreate
             dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
         } else {
-
             # --BEHAVIOR-- adminBeforePageCreate
             dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 

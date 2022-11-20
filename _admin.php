@@ -18,22 +18,16 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 __('Clone Entry') . __('Make a clone of entry');
 
 // Add menu item in blog menu
-dcCore::app()->menu['Blog']->addItem(
+dcCore::app()->menu[dcAdmin::MENU_BLOG]->addItem(
     __('Clone Entry'),
     'plugin.php?p=cloneEntry',
     [urldecode(dcPage::getPF('cloneEntry/icon.svg')), urldecode(dcPage::getPF('cloneEntry/icon-dark.svg'))],
     preg_match('/plugin.php\?p=cloneEntry(&.*)?$/', $_SERVER['REQUEST_URI']),
-    dcCore::app()->auth->check('page,contentadmin', dcCore::app()->blog->id)
+    dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
+        dcAuth::PERMISSION_USAGE,
+        dcAuth::PERMISSION_CONTENT_ADMIN,
+    ]), dcCore::app()->blog->id)
 );
-
-// Add behaviour callback for post
-dcCore::app()->addBehavior('adminPostAfterForm', ['adminCloneEntry', 'clonePost']);
-// Add behaviour callback for page
-dcCore::app()->addBehavior('adminPageAfterForm', ['adminCloneEntry', 'clonePage']);
-
-/* Add behavior callbacks for posts actions */
-dcCore::app()->addBehavior('adminPostsActions', ['adminCloneEntry', 'clonePosts']);
-dcCore::app()->addBehavior('adminPagesActions', ['adminCloneEntry', 'clonePages']);
 
 class adminCloneEntry
 {
@@ -79,7 +73,9 @@ class adminCloneEntry
         dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
             // Add menuitem in actions dropdown list
-            if (dcCore::app()->auth->check('contentadmin', dcCore::app()->blog->id)) {
+            if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
+                dcAuth::PERMISSION_CONTENT_ADMIN,
+            ]), dcCore::app()->blog->id)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected posts') => 'clone']],
                     ['adminCloneEntry', 'doClonePosts']
@@ -93,7 +89,9 @@ class adminCloneEntry
         dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             // Add menuitem in actions dropdown list
-            if (dcCore::app()->auth->check('contentadmin', dcCore::app()->blog->id)) {
+            if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
+                dcAuth::PERMISSION_CONTENT_ADMIN,
+            ]), dcCore::app()->blog->id)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected pages') => 'clone']],
                     ['adminCloneEntry', 'doClonePages']
@@ -146,11 +144,10 @@ class adminCloneEntry
                     $cur->post_open_tb       = (int) $posts->post_open_tb;
                     $cur->post_selected      = (int) $posts->post_selected;
 
-                    $cur->post_status = -2; // forced to pending
+                    $cur->post_status = dcBlog::POST_PENDING; // forced to pending
                     $cur->user_id     = dcCore::app()->auth->userID();
 
                     if ($type == 'post') {
-
                         # --BEHAVIOR-- adminBeforePostCreate
                         dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
@@ -159,7 +156,6 @@ class adminCloneEntry
                         # --BEHAVIOR-- adminAfterPostCreate
                         dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
                     } else {
-
                         # --BEHAVIOR-- adminBeforePageCreate
                         dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 
@@ -227,3 +223,12 @@ class adminCloneEntry
         }
     }
 }
+
+// Add behaviour callback for post
+dcCore::app()->addBehavior('adminPostAfterForm', [adminCloneEntry::class, 'clonePost']);
+// Add behaviour callback for page
+dcCore::app()->addBehavior('adminPageAfterForm', [adminCloneEntry::class, 'clonePage']);
+
+/* Add behavior callbacks for posts actions */
+dcCore::app()->addBehavior('adminPostsActions', [adminCloneEntry::class, 'clonePosts']);
+dcCore::app()->addBehavior('adminPagesActions', [adminCloneEntry::class, 'clonePages']);

@@ -15,20 +15,23 @@ if (!defined('DC_RC_PATH')) {
 }
 
 $this->registerModule(
-    'Clone Entry',           // Name
-    'Make a clone of entry', // Description
-    'Franck Paul',           // Author
-    '1.1',
+    'Clone Entry',
+    'Make a clone of entry',
+    'Franck Paul',
+    '1.2',
     [
-        'requires'    => [['core', '2.24']],                          // Dependencies
-        'permissions' => 'usage,contentadmin',                        // Permissions
-        'type'        => 'plugin',                                    // Type
-        'priority'    => 2000,                                        // Priority
-        'settings'    => [
+        'requires'    => [['core', '2.24']],
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_USAGE,
+            dcAuth::PERMISSION_CONTENT_ADMIN,
+        ]),
+        'type'     => 'plugin',
+        'priority' => 2000,
+        'settings' => [
         ],
 
-        'details'    => 'https://open-time.net/?q=cloneEntry',       // Details URL
-        'support'    => 'https://github.com/franck-paul/cloneEntry', // Support URL
+        'details'    => 'https://open-time.net/?q=cloneEntry',
+        'support'    => 'https://github.com/franck-paul/cloneEntry',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/master/dcstore.xml',
     ]
 );
