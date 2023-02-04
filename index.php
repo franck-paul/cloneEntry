@@ -15,7 +15,6 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 // Getting current parameters
-dcCore::app()->blog->settings->addNamespace('cloneentry');
 $ce_active_post = (bool) dcCore::app()->blog->settings->cloneentry->ce_active_post;
 $ce_active_page = (bool) dcCore::app()->blog->settings->cloneentry->ce_active_page;
 
@@ -117,8 +116,6 @@ dcPage::check(dcCore::app()->auth->makePermissions([
 // Saving new configuration
 if (!empty($_POST['saveconfig'])) {
     try {
-        dcCore::app()->blog->settings->addNamespace('cloneentry');
-
         $ce_active_post = (empty($_POST['active_post'])) ? false : true;
         $ce_active_page = (empty($_POST['active_page'])) ? false : true;
         dcCore::app()->blog->settings->cloneentry->put('ce_active_post', $ce_active_post, 'boolean');

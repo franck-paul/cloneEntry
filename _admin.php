@@ -54,7 +54,6 @@ class adminCloneEntry
 
     public static function clonePost($post)
     {
-        dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
             adminCloneEntry::cloneEntry($post);
         }
@@ -62,7 +61,6 @@ class adminCloneEntry
 
     public static function clonePage($post)
     {
-        dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             adminCloneEntry::cloneEntry($post);
         }
@@ -70,7 +68,6 @@ class adminCloneEntry
 
     public static function clonePosts(dcPostsActions $ap)
     {
-        dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
             // Add menuitem in actions dropdown list
             if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
@@ -86,7 +83,6 @@ class adminCloneEntry
 
     public static function clonePages(dcPagesActions $ap)
     {
-        dcCore::app()->blog->settings->addNamespace('cloneentry');
         if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             // Add menuitem in actions dropdown list
             if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
@@ -224,11 +220,13 @@ class adminCloneEntry
     }
 }
 
-// Add behaviour callback for post
-dcCore::app()->addBehavior('adminPostAfterForm', [adminCloneEntry::class, 'clonePost']);
-// Add behaviour callback for page
-dcCore::app()->addBehavior('adminPageAfterForm', [adminCloneEntry::class, 'clonePage']);
+dcCore::app()->addBehaviors([
+    // Add behaviour callback for post
+    'adminPostAfterForm' => [adminCloneEntry::class, 'clonePost'],
+    // Add behaviour callback for page
+    'adminPageAfterForm' => [adminCloneEntry::class, 'clonePage'],
 
-/* Add behavior callbacks for posts actions */
-dcCore::app()->addBehavior('adminPostsActions', [adminCloneEntry::class, 'clonePosts']);
-dcCore::app()->addBehavior('adminPagesActions', [adminCloneEntry::class, 'clonePages']);
+    /* Add behavior callbacks for posts actions */
+    'adminPostsActions'  => [adminCloneEntry::class, 'clonePosts'],
+    'adminPagesActions'  => [adminCloneEntry::class, 'clonePages'],
+]);
