@@ -10,6 +10,10 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\Html;
+use Dotclear\Helper\Network\Http;
+
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -35,7 +39,7 @@ if (!empty($_POST['clone'])) {
 
         if ($post->isEmpty()) {
             dcCore::app()->error->add(__('This entry does not exist.'));
-            http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id));
+            Http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id));
         }
 
         $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
@@ -100,16 +104,16 @@ if (!empty($_POST['clone'])) {
         dcPage::addSuccessNotice(__('Entry has been successfully cloned.'));
 
         // Go to entry edit page
-        http::redirect(dcCore::app()->getPostAdminURL($post_type, $return_id, false));
+        Http::redirect(dcCore::app()->getPostAdminURL($post_type, $return_id, false));
     } catch (Exception $e) {
         dcCore::app()->error->add($e->getMessage());
-        http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id, false));
+        Http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id, false));
     }
 }
 
 // Next is for admin only
 dcPage::check(dcCore::app()->auth->makePermissions([
-    dcPages::PERMISSION_PAGES,
+    initPages::PERMISSION_PAGES,
     dcAuth::PERMISSION_CONTENT_ADMIN,
 ]));
 
@@ -136,7 +140,7 @@ if (!empty($_POST['saveconfig'])) {
 <?php
 echo dcPage::breadcrumb(
     [
-        html::escapeHTML(dcCore::app()->blog->name) => '',
+        Html::escapeHTML(dcCore::app()->blog->name) => '',
         __('Clone Entry')                           => '',
     ]
 );

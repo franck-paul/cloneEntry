@@ -10,6 +10,10 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\Html;
+use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
+
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -81,7 +85,7 @@ class adminCloneEntry
         }
     }
 
-    public static function clonePages(dcPagesActions $ap)
+    public static function clonePages(PagesBackendActions $ap)
     {
         if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
             // Add menuitem in actions dropdown list
@@ -101,7 +105,7 @@ class adminCloneEntry
         self::doCloneEntries($ap, $post, 'post');
     }
 
-    public static function doClonePages(dcPagesActions $ap, arrayObject $post)
+    public static function doClonePages(PagesBackendActions $ap, arrayObject $post)
     {
         self::doCloneEntries($ap, $post, 'page');
     }
@@ -184,7 +188,7 @@ class adminCloneEntry
                 $ap->beginPage(
                     dcPage::breadcrumb(
                         [
-                            html::escapeHTML(dcCore::app()->blog->name) => '',
+                            Html::escapeHTML(dcCore::app()->blog->name) => '',
                             __('Pages')                                 => 'plugin.php?p=pages',
                             __('Clone selected pages')                  => '',
                         ]
@@ -194,7 +198,7 @@ class adminCloneEntry
                 $ap->beginPage(
                     dcPage::breadcrumb(
                         [
-                            html::escapeHTML(dcCore::app()->blog->name) => '',
+                            Html::escapeHTML(dcCore::app()->blog->name) => '',
                             __('Entries')                               => 'posts.php',
                             __('Clone selected posts')                  => '',
                         ]
@@ -227,6 +231,6 @@ dcCore::app()->addBehaviors([
     'adminPageAfterForm' => [adminCloneEntry::class, 'clonePage'],
 
     /* Add behavior callbacks for posts actions */
-    'adminPostsActions'  => [adminCloneEntry::class, 'clonePosts'],
-    'adminPagesActions'  => [adminCloneEntry::class, 'clonePages'],
+    'adminPostsActions' => [adminCloneEntry::class, 'clonePosts'],
+    'adminPagesActions' => [adminCloneEntry::class, 'clonePages'],
 ]);
