@@ -10,76 +10,80 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
 
+namespace Dotclear\Plugin\cloneEntry;
+
+use ArrayObject;
+use dcBlog;
+use dcCore;
+use dcPage;
+use dcPostMedia;
+use dcPostsActions;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Submit;
+use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return;
-}
-
-// dead but useful code, in order to have translations
-__('Clone Entry') . __('Make a clone of entry');
-
-// Add menu item in blog menu
-dcCore::app()->menu[dcAdmin::MENU_BLOG]->addItem(
-    __('Clone Entry'),
-    'plugin.php?p=cloneEntry',
-    [urldecode(dcPage::getPF('cloneEntry/icon.svg')), urldecode(dcPage::getPF('cloneEntry/icon-dark.svg'))],
-    preg_match('/plugin.php\?p=cloneEntry(&.*)?$/', $_SERVER['REQUEST_URI']),
-    dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-        dcAuth::PERMISSION_USAGE,
-        dcAuth::PERMISSION_CONTENT_ADMIN,
-    ]), dcCore::app()->blog->id)
-);
-
-class adminCloneEntry
+class BackendBehaviors
 {
     public static function cloneEntry($post)
     {
         if ($post != null) {
             // Display clone button
-            $res = '<div id="clone-entry" class="clear">' . "\n" .
-            '<form action="' . dcCore::app()->adminurl->get('admin.plugin.cloneEntry') . '" method="post" id="clone-form">' . "\n" .
-            '<p>' . "\n" .
-            '<input type="submit" value="' . __('Clone this entry') . '" name="clone" class="clone" />' . "\n" .
-            form::hidden('clone_id', $post->post_id) . "\n" .
-            form::hidden('clone_type', $post->post_type) . "\n" .
-            dcCore::app()->formNonce() . "\n" .
-            '</p>' . "\n" .
-            '<p class="form-note">' . __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' . "\n" .
-            __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' . "\n" .
-            __('The category, tags, attachments and other properties will be preserved.') . '</p>' . "\n" .
-                '</form>' . "\n" .
-                '</div>' . "\n";
-            echo $res;
+            echo (new Para('clone-entry', 'div'))->class('clear')->items([
+                (new Form('clone-form'))
+                    ->action(dcCore::app()->adminurl->get('admin.plugin.cloneEntry'))
+                    ->method('post')
+                    ->fields([
+                        (new Para())->items([
+                            (new Submit(['clone'], __('Clone this entry')))->class('clone'),
+                            dcCore::app()->formNonce(false),
+                            (new Hidden('clone_id', $post->post_id)),
+                            (new Hidden('clone_type', $post->post_type)),
+                        ]),
+                        (new Para())->class('form-note')->items([
+                            (new Text(
+                                null,
+                                __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
+                                __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
+                                __('The category, tags, attachments and other properties will be preserved.')
+                            )),
+                        ]),
+                    ]),
+            ])
+            ->render();
         }
     }
 
     public static function clonePost($post)
     {
-        if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
-            adminCloneEntry::cloneEntry($post);
+        $settings = dcCore::app()->blog->settings->get(My::id());
+        if ($settings->active_post) {
+            BackendBehaviors::cloneEntry($post);
         }
     }
 
     public static function clonePage($post)
     {
-        if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
-            adminCloneEntry::cloneEntry($post);
+        $settings = dcCore::app()->blog->settings->get(My::id());
+        if ($settings->active_page) {
+            BackendBehaviors::cloneEntry($post);
         }
     }
 
     public static function clonePosts(dcPostsActions $ap)
     {
-        if (dcCore::app()->blog->settings->cloneentry->ce_active_post) {
+        $settings = dcCore::app()->blog->settings->get(My::id());
+        if ($settings->active_post) {
             // Add menuitem in actions dropdown list
-            if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-                dcAuth::PERMISSION_CONTENT_ADMIN,
-            ]), dcCore::app()->blog->id)) {
+            if (My::checkContext(My::BACKEND)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected posts') => 'clone']],
-                    ['adminCloneEntry', 'doClonePosts']
+                    [self::class, 'doClonePosts']
                 );
             }
         }
@@ -87,30 +91,29 @@ class adminCloneEntry
 
     public static function clonePages(PagesBackendActions $ap)
     {
-        if (dcCore::app()->blog->settings->cloneentry->ce_active_page) {
+        $settings = dcCore::app()->blog->settings->get(My::id());
+        if ($settings->active_page) {
             // Add menuitem in actions dropdown list
-            if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-                dcAuth::PERMISSION_CONTENT_ADMIN,
-            ]), dcCore::app()->blog->id)) {
+            if (My::checkContext(My::BACKEND)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected pages') => 'clone']],
-                    ['adminCloneEntry', 'doClonePages']
+                    [self::class, 'doClonePages']
                 );
             }
         }
     }
 
-    public static function doClonePosts(dcPostsActions $ap, arrayObject $post)
+    public static function doClonePosts(dcPostsActions $ap, ArrayObject $post)
     {
         self::doCloneEntries($ap, $post, 'post');
     }
 
-    public static function doClonePages(PagesBackendActions $ap, arrayObject $post)
+    public static function doClonePages(PagesBackendActions $ap, ArrayObject $post)
     {
         self::doCloneEntries($ap, $post, 'page');
     }
 
-    public static function doCloneEntries($ap, arrayObject $post, $type = 'post')
+    public static function doCloneEntries($ap, ArrayObject $post, $type = 'post')
     {
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
@@ -206,31 +209,33 @@ class adminCloneEntry
                 );
             }
 
+            echo (new Form('clone-form'))
+                ->action($ap->getURI())
+                ->method('post')
+                ->fields([
+                    (new Text(null, $ap->getCheckboxes())),
+                    (new Para())->items([
+                        (new Submit(['clone'], __('Clone'))),
+                    ]),
+                    (new Para())->class('form-note')->items([
+                        (new Text(
+                            null,
+                            __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
+                            __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
+                            __('The category, tags, attachments and other properties will be preserved.')
+                        )),
+                    ]),
+                    (new Para())->items([
+                        dcCore::app()->formNonce(false),
+                        (new Text(null, $ap->getHiddenFields())),
+                        (new Hidden('full_content', 'true')),
+                        (new Hidden('action', 'clone')),
+                    ]),
+                ])
+            ->render();
+
             echo
-            '<form action="' . $ap->getURI() . '" method="post">' .
-            $ap->getCheckboxes() .
-            '<p><input type="submit" value="' . __('Clone') . '" /></p>' . "\n" .
-
-            '<p class="form-note">' . __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' . "\n" .
-            __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' . "\n" .
-            __('The category, tags, attachments and other properties will be preserved.') . '</p>' . "\n" .
-
-            dcCore::app()->formNonce() . $ap->getHiddenFields() .
-            form::hidden(['full_content'], 'true') .
-            form::hidden(['action'], 'clone') .
-                '</form>';
             $ap->endPage();
         }
     }
 }
-
-dcCore::app()->addBehaviors([
-    // Add behaviour callback for post
-    'adminPostAfterForm' => [adminCloneEntry::class, 'clonePost'],
-    // Add behaviour callback for page
-    'adminPageAfterForm' => [adminCloneEntry::class, 'clonePage'],
-
-    /* Add behavior callbacks for posts actions */
-    'adminPostsActions' => [adminCloneEntry::class, 'clonePosts'],
-    'adminPagesActions' => [adminCloneEntry::class, 'clonePages'],
-]);
