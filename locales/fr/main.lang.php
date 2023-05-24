@@ -20,9 +20,9 @@ L10n::$locales['The category, tags, attachments and other properties will be pre
 L10n::$locales['Clone'] = 'Dupliquer';
 L10n::$locales['Clone selected posts'] = 'Dupliquer les billets sélectionnés';
 L10n::$locales['Clone selected pages'] = 'Dupliquer les pages sélectionnées';
-L10n::$locales['Pages'] = '';
-L10n::$locales['Entries'] = '';
-L10n::$locales['This entry does not exist.'] = '';
+L10n::$locales['Pages'] = 'Pages';
+L10n::$locales['Entries'] = 'Billets';
+L10n::$locales['This entry does not exist.'] = 'Cette publication n\'existe pas.';
 L10n::$locales['Entry has been successfully cloned.'] = 'La publication a été dupliquée.';
 L10n::$locales['Enable Cloning of post for this blog'] = 'Activer la duplication de billet pour ce blog';
 L10n::$locales['Enable Cloning of page for this blog'] = 'Activer la duplication de page pour ce blog';
