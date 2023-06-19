@@ -202,7 +202,7 @@ class BackendBehaviors
                     dcPage::breadcrumb(
                         [
                             Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Entries')                               => 'posts.php',
+                            __('Entries')                               => dcCore::app()->adminurl->get('admin.posts'),
                             __('Clone selected posts')                  => '',
                         ]
                     )
