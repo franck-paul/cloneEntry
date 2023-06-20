@@ -14,7 +14,7 @@ $this->registerModule(
     'Clone Entry',
     'Make a clone of entry',
     'Franck Paul',
-    '3.2',
+    '3.3',
     [
         'requires'    => [['core', '2.26']],
         'permissions' => dcCore::app()->auth->makePermissions([

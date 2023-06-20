@@ -153,7 +153,7 @@ class Manage extends dcNsProcess
                     dcCore::app()->blog->triggerBlog();
 
                     dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-                    Http::redirect(dcCore::app()->admin->getPageURL());
+                    dcCore::app()->adminurl->redirect('admin.plugin.' . My::id());
                 } catch (Exception $e) {
                     dcCore::app()->error->add($e->getMessage());
                 }
