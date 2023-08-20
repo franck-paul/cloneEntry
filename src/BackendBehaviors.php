@@ -17,9 +17,9 @@ namespace Dotclear\Plugin\cloneEntry;
 use ArrayObject;
 use dcBlog;
 use dcCore;
-use dcPage;
 use dcPostMedia;
-use dcPostsActions;
+use Dotclear\Core\Backend\Action\ActionsPosts;
+use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Para;
@@ -36,7 +36,7 @@ class BackendBehaviors
             // Display clone button
             echo (new Para('clone-entry', 'div'))->class('clear')->items([
                 (new Form('clone-form'))
-                    ->action(dcCore::app()->adminurl->get('admin.plugin.cloneEntry'))
+                    ->action(dcCore::app()->admin->url->get('admin.plugin.cloneEntry'))
                     ->method('post')
                     ->fields([
                         (new Para())->items([
@@ -75,7 +75,7 @@ class BackendBehaviors
         }
     }
 
-    public static function clonePosts(dcPostsActions $ap)
+    public static function clonePosts(ActionsPosts $ap)
     {
         $settings = dcCore::app()->blog->settings->get(My::id());
         if ($settings->active_post) {
@@ -83,7 +83,7 @@ class BackendBehaviors
             if (My::checkContext(My::BACKEND)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected posts') => 'clone']],
-                    [self::class, 'doClonePosts']
+                    self::doClonePosts(...)
                 );
             }
         }
@@ -97,13 +97,13 @@ class BackendBehaviors
             if (My::checkContext(My::BACKEND)) {
                 $ap->addAction(
                     [__('Clone') => [__('Clone selected pages') => 'clone']],
-                    [self::class, 'doClonePages']
+                    self::doClonePages(...)
                 );
             }
         }
     }
 
-    public static function doClonePosts(dcPostsActions $ap, ArrayObject $post)
+    public static function doClonePosts(ActionsPosts $ap, ArrayObject $post)
     {
         self::doCloneEntries($ap, $post, 'post');
     }
@@ -189,20 +189,20 @@ class BackendBehaviors
             // Ask confirmation before cloning
             if ($type == 'page') {
                 $ap->beginPage(
-                    dcPage::breadcrumb(
+                    Page::breadcrumb(
                         [
                             Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Pages')                                 => dcCore::app()->adminurl->get('admin.plugin.pages'),
+                            __('Pages')                                 => dcCore::app()->admin->url->get('admin.plugin.pages'),
                             __('Clone selected pages')                  => '',
                         ]
                     )
                 );
             } else {
                 $ap->beginPage(
-                    dcPage::breadcrumb(
+                    Page::breadcrumb(
                         [
                             Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Entries')                               => dcCore::app()->adminurl->get('admin.posts'),
+                            __('Entries')                               => dcCore::app()->admin->url->get('admin.posts'),
                             __('Clone selected posts')                  => '',
                         ]
                     )

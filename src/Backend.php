@@ -14,33 +14,30 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\cloneEntry;
 
-use dcAdmin;
 use dcCore;
-use dcNsProcess;
+use Dotclear\Core\Backend\Menus;
+use Dotclear\Core\Process;
 
-class Backend extends dcNsProcess
+class Backend extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     public static function init(): bool
     {
-        static::$init = My::checkContext(My::BACKEND);
-
         // dead but useful code, in order to have translations
         __('Clone Entry') . __('Make a clone of entry');
 
-        return static::$init;
+        return self::status(My::checkContext(My::BACKEND));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
         // Add menu item in blog menu
-        dcCore::app()->menu[dcAdmin::MENU_BLOG]->addItem(
+        dcCore::app()->admin->menus[Menus::MENU_BLOG]->addItem(
             __('Clone Entry'),
-            My::makeUrl(),
+            My::manageUrl(),
             My::icons(),
             preg_match(My::urlScheme(), $_SERVER['REQUEST_URI']),
             My::checkContext(My::MENU)
@@ -48,13 +45,13 @@ class Backend extends dcNsProcess
 
         dcCore::app()->addBehaviors([
             // Add behaviour callback for post
-            'adminPostAfterForm' => [BackendBehaviors::class, 'clonePost'],
+            'adminPostAfterForm' => BackendBehaviors::clonePost(...),
             // Add behaviour callback for page
-            'adminPageAfterForm' => [BackendBehaviors::class, 'clonePage'],
+            'adminPageAfterForm' => BackendBehaviors::clonePage(...),
 
             /* Add behavior callbacks for posts actions */
-            'adminPostsActions' => [BackendBehaviors::class, 'clonePosts'],
-            'adminPagesActions' => [BackendBehaviors::class, 'clonePages'],
+            'adminPostsActions' => BackendBehaviors::clonePosts(...),
+            'adminPagesActions' => BackendBehaviors::clonePages(...),
         ]);
 
         return true;

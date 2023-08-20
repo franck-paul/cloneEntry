@@ -17,9 +17,10 @@ namespace Dotclear\Plugin\cloneEntry;
 use dcBlog;
 use dcCore;
 use dcNamespace;
-use dcNsProcess;
-use dcPage;
 use dcPostMedia;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Label;
@@ -29,9 +30,8 @@ use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Network\Http;
 use Exception;
 
-class Manage extends dcNsProcess
+class Manage extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     /**
      * Initializes the page.
      */
@@ -39,9 +39,7 @@ class Manage extends dcNsProcess
     {
         // Larger scope than manage only as this class cope with cloning action on entry edit page
         // See BackendBehaviors::cloneEntry()
-        static::$init = My::checkContext(My::BACKEND);
-
-        return static::$init;
+        return self::status(My::checkContext(My::BACKEND));
     }
 
     /**
@@ -49,7 +47,7 @@ class Manage extends dcNsProcess
      */
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -131,7 +129,7 @@ class Manage extends dcNsProcess
                     $postmedia->addPostMedia($return_id, $media->media_id);
                 }
 
-                dcPage::addSuccessNotice(__('Entry has been successfully cloned.'));
+                Notices::addSuccessNotice(__('Entry has been successfully cloned.'));
 
                 // Go to entry edit page
                 Http::redirect(dcCore::app()->getPostAdminURL($post_type, $return_id, false));
@@ -153,8 +151,8 @@ class Manage extends dcNsProcess
 
                     dcCore::app()->blog->triggerBlog();
 
-                    dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-                    dcCore::app()->adminurl->redirect('admin.plugin.' . My::id());
+                    Notices::addSuccessNotice(__('Configuration successfully updated.'));
+                    dcCore::app()->admin->url->redirect('admin.plugin.' . My::id());
                 } catch (Exception $e) {
                     dcCore::app()->error->add($e->getMessage());
                 }
@@ -169,7 +167,7 @@ class Manage extends dcNsProcess
      */
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
@@ -184,15 +182,15 @@ class Manage extends dcNsProcess
         $active_post = (bool) $settings->active_post;
         $active_page = (bool) $settings->active_page;
 
-        dcPage::openModule(__('Clone Entry'));
+        Page::openModule(__('Clone Entry'));
 
-        echo dcPage::breadcrumb(
+        echo Page::breadcrumb(
             [
                 Html::escapeHTML(dcCore::app()->blog->name) => '',
                 __('Clone Entry')                           => '',
             ]
         );
-        echo dcPage::notices();
+        echo Notices::getNotices();
 
         // Form
         echo (new Form('options'))
@@ -217,6 +215,6 @@ class Manage extends dcNsProcess
             ])
             ->render();
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 }
