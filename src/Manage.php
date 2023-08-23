@@ -145,7 +145,7 @@ class Manage extends Process
                     $active_post = (empty($_POST['active_post'])) ? false : true;
                     $active_page = (empty($_POST['active_page'])) ? false : true;
 
-                    $settings = dcCore::app()->blog->settings->get(My::id());
+                    $settings = My::settings();
                     $settings->put('active_post', $active_post, dcNamespace::NS_BOOL);
                     $settings->put('active_page', $active_page, dcNamespace::NS_BOOL);
 
@@ -177,12 +177,12 @@ class Manage extends Process
         }
 
         // Getting current parameters
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
 
         $active_post = (bool) $settings->active_post;
         $active_page = (bool) $settings->active_page;
 
-        Page::openModule(__('Clone Entry'));
+        Page::openModule(My::name());
 
         echo Page::breadcrumb(
             [
@@ -210,7 +210,7 @@ class Manage extends Process
                 (new Para())->items([
                     (new Submit(['saveconfig'], __('Save configuration')))
                         ->accesskey('s'),
-                    dcCore::app()->formNonce(false),
+                    ... My::hiddenFields(),
                 ]),
             ])
             ->render();

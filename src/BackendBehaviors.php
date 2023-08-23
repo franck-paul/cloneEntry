@@ -21,7 +21,6 @@ use dcPostMedia;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Form;
-use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
@@ -41,9 +40,10 @@ class BackendBehaviors
                     ->fields([
                         (new Para())->items([
                             (new Submit(['clone'], __('Clone this entry')))->class('clone'),
-                            dcCore::app()->formNonce(false),
-                            (new Hidden('clone_id', $post->post_id)),
-                            (new Hidden('clone_type', $post->post_type)),
+                            ... My::hiddenFields([
+                                'clone_id'   => $post->post_id,
+                                'clone_type' => $post->post_type,
+                            ]),
                         ]),
                         (new Para())->class('form-note')->items([
                             (new Text(
@@ -61,7 +61,7 @@ class BackendBehaviors
 
     public static function clonePost($post)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active_post) {
             BackendBehaviors::cloneEntry($post);
         }
@@ -69,7 +69,7 @@ class BackendBehaviors
 
     public static function clonePage($post)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active_page) {
             BackendBehaviors::cloneEntry($post);
         }
@@ -77,7 +77,7 @@ class BackendBehaviors
 
     public static function clonePosts(ActionsPosts $ap)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active_post) {
             // Add menuitem in actions dropdown list
             if (My::checkContext(My::BACKEND)) {
@@ -91,7 +91,7 @@ class BackendBehaviors
 
     public static function clonePages(PagesBackendActions $ap)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active_page) {
             // Add menuitem in actions dropdown list
             if (My::checkContext(My::BACKEND)) {
@@ -226,10 +226,11 @@ class BackendBehaviors
                         )),
                     ]),
                     (new Para())->items([
-                        dcCore::app()->formNonce(false),
                         (new Text(null, $ap->getHiddenFields())),
-                        (new Hidden('full_content', 'true')),
-                        (new Hidden('action', 'clone')),
+                        ... My::hiddenFields([
+                            'full_content' => 'true',
+                            'action'       => 'clone',
+                        ]),
                     ]),
                 ])
             ->render();
