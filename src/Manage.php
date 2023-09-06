@@ -84,7 +84,6 @@ class Manage extends Process
                 $cur->post_format        = $post->post_format;
                 $cur->post_password      = $post->post_password;
                 $cur->post_lang          = $post->post_lang;
-                $cur->post_title         = $post->post_title;
                 $cur->post_excerpt       = $post->post_excerpt;
                 $cur->post_excerpt_xhtml = $post->post_excerpt_xhtml;
                 $cur->post_content       = $post->post_content;

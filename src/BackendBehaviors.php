@@ -21,6 +21,7 @@ use dcPostMedia;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
@@ -210,29 +211,29 @@ class BackendBehaviors
             }
 
             echo (new Form('clone-form'))
-                ->action($ap->getURI())
-                ->method('post')
-                ->fields([
-                    (new Text(null, $ap->getCheckboxes())),
-                    (new Para())->items([
-                        (new Submit(['clone'], __('Clone'))),
-                    ]),
-                    (new Para())->class('form-note')->items([
-                        (new Text(
-                            null,
-                            __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
-                            __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
-                            __('The category, tags, attachments and other properties will be preserved.')
-                        )),
-                    ]),
-                    (new Para())->items([
-                        (new Text(null, $ap->getHiddenFields())),
-                        ... My::hiddenFields([
-                            'full_content' => 'true',
-                            'action'       => 'clone',
-                        ]),
-                    ]),
-                ])
+            ->action($ap->getURI())
+            ->method('post')
+            ->fields([
+                (new Text(null, $ap->getCheckboxes())),
+                (new Para())->items([
+                    (new Submit(['clone'], __('Clone'))),
+                ]),
+                (new Para())->class('form-note')->items([
+                    (new Text(
+                        null,
+                        __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
+                        __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
+                        __('The category, tags, attachments and other properties will be preserved.')
+                    )),
+                ]),
+                (new Para())->items([
+                    (new Text(null, $ap->getHiddenFields())),
+                    (new Hidden(['full_content'], 'true')),
+                    (new Hidden(['action'], 'clone')),
+                    (new Hidden(['process'], ($type === 'post' ? 'Posts' : 'Plugin'))),
+                    dcCore::app()->formNonce(false),
+                ]),
+            ])
             ->render();
 
             echo
