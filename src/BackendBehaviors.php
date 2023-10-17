@@ -20,6 +20,7 @@ use dcCore;
 use dcPostMedia;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Para;
@@ -30,13 +31,13 @@ use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
 class BackendBehaviors
 {
-    public static function cloneEntry($post)
+    private static function cloneEntry(?MetaRecord $post): void
     {
-        if ($post != null) {
+        if (!is_null($post)) {
             // Display clone button
             echo (new Para('clone-entry', 'div'))->class('clear')->items([
                 (new Form('clone-form'))
-                    ->action(dcCore::app()->admin->url->get('admin.plugin.cloneEntry'))
+                    ->action(dcCore::app()->adminurl->get('admin.plugin.cloneEntry'))
                     ->method('post')
                     ->fields([
                         (new Para())->items([
@@ -60,23 +61,27 @@ class BackendBehaviors
         }
     }
 
-    public static function clonePost($post)
+    public static function clonePost(?MetaRecord $post): string
     {
         $settings = My::settings();
         if ($settings->active_post) {
-            BackendBehaviors::cloneEntry($post);
+            self::cloneEntry($post);
         }
+
+        return '';
     }
 
-    public static function clonePage($post)
+    public static function clonePage(?MetaRecord $post): string
     {
         $settings = My::settings();
         if ($settings->active_page) {
-            BackendBehaviors::cloneEntry($post);
+            self::cloneEntry($post);
         }
+
+        return '';
     }
 
-    public static function clonePosts(ActionsPosts $ap)
+    public static function clonePosts(ActionsPosts $ap): string
     {
         $settings = My::settings();
         if ($settings->active_post) {
@@ -88,9 +93,11 @@ class BackendBehaviors
                 );
             }
         }
+
+        return '';
     }
 
-    public static function clonePages(PagesBackendActions $ap)
+    public static function clonePages(PagesBackendActions $ap): string
     {
         $settings = My::settings();
         if ($settings->active_page) {
@@ -102,19 +109,34 @@ class BackendBehaviors
                 );
             }
         }
+
+        return '';
     }
 
-    public static function doClonePosts(ActionsPosts $ap, ArrayObject $post)
+    /**
+     * @param      ActionsPosts                 $ap     Actions
+     * @param      ArrayObject<string, mixed>   $post   The post
+     */
+    public static function doClonePosts(ActionsPosts $ap, ArrayObject $post): void
     {
         self::doCloneEntries($ap, $post, 'post');
     }
 
-    public static function doClonePages(PagesBackendActions $ap, ArrayObject $post)
+    /**
+     * @param      PagesBackendActions          $ap     Actions
+     * @param      ArrayObject<string, mixed>   $post   The post
+     */
+    public static function doClonePages(PagesBackendActions $ap, ArrayObject $post): void
     {
         self::doCloneEntries($ap, $post, 'page');
     }
 
-    public static function doCloneEntries($ap, ArrayObject $post, $type = 'post')
+    /**
+     * @param      ActionsPosts|PagesBackendActions     $ap     Actions
+     * @param      ArrayObject<string, mixed>           $post   The post
+     * @param      string                               $type   The type
+     */
+    private static function doCloneEntries(ActionsPosts|PagesBackendActions $ap, ArrayObject $post, $type = 'post'): void
     {
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
@@ -193,7 +215,7 @@ class BackendBehaviors
                     Page::breadcrumb(
                         [
                             Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Pages')                                 => dcCore::app()->admin->url->get('admin.plugin.pages'),
+                            __('Pages')                                 => dcCore::app()->adminurl->get('admin.plugin.pages'),
                             __('Clone selected pages')                  => '',
                         ]
                     )
@@ -203,7 +225,7 @@ class BackendBehaviors
                     Page::breadcrumb(
                         [
                             Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Entries')                               => dcCore::app()->admin->url->get('admin.posts'),
+                            __('Entries')                               => dcCore::app()->adminurl->get('admin.posts'),
                             __('Clone selected posts')                  => '',
                         ]
                     )
@@ -236,7 +258,6 @@ class BackendBehaviors
             ])
             ->render();
 
-            echo
             $ap->endPage();
         }
     }
