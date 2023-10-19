@@ -18,6 +18,7 @@ use dcBlog;
 use dcCore;
 use dcNamespace;
 use dcPostMedia;
+use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
@@ -63,7 +64,7 @@ class Manage extends Process
                 $params['post_type'] = $post_type;
                 $params['post_id']   = $post_id;
 
-                $post = dcCore::app()->blog->getPosts($params);
+                $post = App::blog()->getPosts($params);
 
                 if ($post->isEmpty()) {
                     dcCore::app()->error->add(__('This entry does not exist.'));
@@ -74,7 +75,7 @@ class Manage extends Process
 
                 if ($post_type == 'page') {
                     # Magic tweak :)
-                    dcCore::app()->blog->settings->system->post_url_format = '{t}';
+                    App::blog()->settings()->system->post_url_format = '{t}';
                 }
 
                 // Duplicate entry contents and options
@@ -101,7 +102,7 @@ class Manage extends Process
                     # --BEHAVIOR-- adminBeforePostCreate
                     dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-                    $return_id = dcCore::app()->blog->addPost($cur);
+                    $return_id = App::blog()->addPost($cur);
 
                     # --BEHAVIOR-- adminAfterPostCreate
                     dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
@@ -109,7 +110,7 @@ class Manage extends Process
                     # --BEHAVIOR-- adminBeforePageCreate
                     dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 
-                    $return_id = dcCore::app()->blog->addPost($cur);
+                    $return_id = App::blog()->addPost($cur);
 
                     # --BEHAVIOR-- adminAfterPageCreate
                     dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
@@ -148,7 +149,7 @@ class Manage extends Process
                     $settings->put('active_post', $active_post, dcNamespace::NS_BOOL);
                     $settings->put('active_page', $active_page, dcNamespace::NS_BOOL);
 
-                    dcCore::app()->blog->triggerBlog();
+                    App::blog()->triggerBlog();
 
                     Notices::addSuccessNotice(__('Configuration successfully updated.'));
                     dcCore::app()->adminurl->redirect('admin.plugin.' . My::id());
@@ -185,8 +186,8 @@ class Manage extends Process
 
         echo Page::breadcrumb(
             [
-                Html::escapeHTML(dcCore::app()->blog->name) => '',
-                __('Clone Entry')                           => '',
+                Html::escapeHTML(App::blog()->name()) => '',
+                __('Clone Entry')                     => '',
             ]
         );
         echo Notices::getNotices();

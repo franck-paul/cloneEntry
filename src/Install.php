@@ -16,6 +16,7 @@ namespace Dotclear\Plugin\cloneEntry;
 
 use dcCore;
 use dcNamespace;
+use Dotclear\App;
 use Dotclear\Core\Process;
 use Exception;
 
@@ -37,9 +38,9 @@ class Install extends Process
             $old_version = dcCore::app()->getVersion(My::id());
             if (version_compare((string) $old_version, '3.0', '<')) {
                 // Rename settings namespace
-                if (dcCore::app()->blog->settings->exists('cloneentry')) {
-                    dcCore::app()->blog->settings->delNamespace(My::id());
-                    dcCore::app()->blog->settings->renNamespace('cloneentry', My::id());
+                if (App::blog()->settings()->exists('cloneentry')) {
+                    App::blog()->settings()->delNamespace(My::id());
+                    App::blog()->settings()->renNamespace('cloneentry', My::id());
                 }
 
                 // Change settings names (remove ce_ prefix in them)

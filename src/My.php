@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\cloneEntry;
 
 use dcCore;
+use Dotclear\App;
 use Dotclear\Module\MyPlugin;
 use initPages;
 
@@ -39,7 +40,7 @@ class My extends MyPlugin
                         dcCore::app()->auth::PERMISSION_USAGE,
                         dcCore::app()->auth::PERMISSION_CONTENT_ADMIN,
                         initPages::PERMISSION_PAGES,
-                    ]), dcCore::app()->blog->id),
+                    ]), App::blog()->id()),
 
             default => null
         };

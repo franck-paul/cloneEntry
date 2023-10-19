@@ -18,6 +18,7 @@ use ArrayObject;
 use dcBlog;
 use dcCore;
 use dcPostMedia;
+use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
@@ -149,7 +150,7 @@ class BackendBehaviors
 
                     if ($type == 'page') {
                         # Magic tweak :)
-                        dcCore::app()->blog->settings->system->post_url_format = '{t}';
+                        App::blog()->settings()->system->post_url_format = '{t}';
                     }
 
                     // Duplicate entry contents and options
@@ -177,7 +178,7 @@ class BackendBehaviors
                         # --BEHAVIOR-- adminBeforePostCreate
                         dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-                        $return_id = dcCore::app()->blog->addPost($cur);
+                        $return_id = App::blog()->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPostCreate
                         dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
@@ -185,7 +186,7 @@ class BackendBehaviors
                         # --BEHAVIOR-- adminBeforePageCreate
                         dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
 
-                        $return_id = dcCore::app()->blog->addPost($cur);
+                        $return_id = App::blog()->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPageCreate
                         dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
@@ -214,9 +215,9 @@ class BackendBehaviors
                 $ap->beginPage(
                     Page::breadcrumb(
                         [
-                            Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Pages')                                 => dcCore::app()->adminurl->get('admin.plugin.pages'),
-                            __('Clone selected pages')                  => '',
+                            Html::escapeHTML(App::blog()->name()) => '',
+                            __('Pages')                           => dcCore::app()->adminurl->get('admin.plugin.pages'),
+                            __('Clone selected pages')            => '',
                         ]
                     )
                 );
@@ -224,9 +225,9 @@ class BackendBehaviors
                 $ap->beginPage(
                     Page::breadcrumb(
                         [
-                            Html::escapeHTML(dcCore::app()->blog->name) => '',
-                            __('Entries')                               => dcCore::app()->adminurl->get('admin.posts'),
-                            __('Clone selected posts')                  => '',
+                            Html::escapeHTML(App::blog()->name()) => '',
+                            __('Entries')                         => dcCore::app()->adminurl->get('admin.posts'),
+                            __('Clone selected posts')            => '',
                         ]
                     )
                 );
