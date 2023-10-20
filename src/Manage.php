@@ -14,10 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\cloneEntry;
 
-use dcBlog;
-use dcCore;
-use dcNamespace;
-use dcPostMedia;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
@@ -29,6 +25,7 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Network\Http;
+use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class Manage extends Process
@@ -67,11 +64,11 @@ class Manage extends Process
                 $post = App::blog()->getPosts($params);
 
                 if ($post->isEmpty()) {
-                    dcCore::app()->error->add(__('This entry does not exist.'));
-                    Http::redirect(dcCore::app()->getPostAdminURL($post_type, $post_id));
+                    App::error()->add(__('This entry does not exist.'));
+                    Http::redirect(App::postTypes()->get($post_type)->adminUrl($post_id));
                 }
 
-                $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
+                $cur = App::con()->openCursor(App::con()->prefix() . 'post');
 
                 if ($post_type == 'page') {
                     # Magic tweak :)
@@ -95,35 +92,35 @@ class Manage extends Process
                 $cur->post_open_tb       = (int) $post->post_open_tb;
                 $cur->post_selected      = (int) $post->post_selected;
 
-                $cur->post_status = dcBlog::POST_PENDING; // forced to pending
-                $cur->user_id     = dcCore::app()->auth->userID();
+                $cur->post_status = BlogInterface::POST_PENDING; // forced to pending
+                $cur->user_id     = App::auth()->userID();
 
                 if ($post_type == 'post') {
                     # --BEHAVIOR-- adminBeforePostCreate
-                    dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
+                    App::behavior()->callBehavior('adminBeforePostCreate', $cur);
 
                     $return_id = App::blog()->addPost($cur);
 
                     # --BEHAVIOR-- adminAfterPostCreate
-                    dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
+                    App::behavior()->callBehavior('adminAfterPostCreate', $cur, $return_id);
                 } else {
                     # --BEHAVIOR-- adminBeforePageCreate
-                    dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
+                    App::behavior()->callBehavior('adminBeforePageCreate', $cur);
 
                     $return_id = App::blog()->addPost($cur);
 
                     # --BEHAVIOR-- adminAfterPageCreate
-                    dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
+                    App::behavior()->callBehavior('adminAfterPageCreate', $cur, $return_id);
                 }
 
                 // If old entry has meta data, duplicate them too
-                $meta = dcCore::app()->meta->getMetadata(['post_id' => $post_id]);
+                $meta = App::meta()->getMetadata(['post_id' => $post_id]);
                 while ($meta->fetch()) {
-                    dcCore::app()->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                    App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
                 }
 
                 // If old entry has attached media, duplicate them too
-                $postmedia = new dcPostMedia();
+                $postmedia = App::postMedia();
                 $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                 while ($media->fetch()) {
                     $postmedia->addPostMedia($return_id, $media->media_id);
@@ -132,9 +129,9 @@ class Manage extends Process
                 Notices::addSuccessNotice(__('Entry has been successfully cloned.'));
 
                 // Go to entry edit page
-                Http::redirect(dcCore::app()->getPostAdminURL($post_type, $return_id, false));
+                Http::redirect(App::postTypes()->get($post_type)->adminUrl($return_id, false));
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 
@@ -146,15 +143,15 @@ class Manage extends Process
                     $active_page = (empty($_POST['active_page'])) ? false : true;
 
                     $settings = My::settings();
-                    $settings->put('active_post', $active_post, dcNamespace::NS_BOOL);
-                    $settings->put('active_page', $active_page, dcNamespace::NS_BOOL);
+                    $settings->put('active_post', $active_post, App::blogWorkspace()::NS_BOOL);
+                    $settings->put('active_page', $active_page, App::blogWorkspace()::NS_BOOL);
 
                     App::blog()->triggerBlog();
 
                     Notices::addSuccessNotice(__('Configuration successfully updated.'));
-                    dcCore::app()->adminurl->redirect('admin.plugin.' . My::id());
+                    My::redirect();
                 } catch (Exception $e) {
-                    dcCore::app()->error->add($e->getMessage());
+                    App::error()->add($e->getMessage());
                 }
             }
         }
@@ -194,7 +191,7 @@ class Manage extends Process
 
         // Form
         echo (new Form('options'))
-            ->action(dcCore::app()->admin->getPageURL())
+            ->action(App::backend()->getPageURL())
             ->method('post')
             ->fields([
                 (new Para())->items([

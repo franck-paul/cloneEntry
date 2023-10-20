@@ -14,10 +14,9 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\cloneEntry;
 
-use dcCore;
 use Dotclear\App;
 use Dotclear\Module\MyPlugin;
-use initPages;
+use Dotclear\Plugin\pages\Pages;
 
 /**
  * Plugin definitions
@@ -34,12 +33,12 @@ class My extends MyPlugin
     public static function checkCustomContext(int $context): ?bool
     {
         return match ($context) {
-            self::BACKEND => defined('DC_CONTEXT_ADMIN')
+            self::BACKEND => App::task()->checkContext('BACKEND')
                     // Check specific permission
-                    && dcCore::app()->blog && dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-                        dcCore::app()->auth::PERMISSION_USAGE,
-                        dcCore::app()->auth::PERMISSION_CONTENT_ADMIN,
-                        initPages::PERMISSION_PAGES,
+                    && App::blog()->isDefined() && App::auth()->check(App::auth()->makePermissions([
+                        App::auth()::PERMISSION_USAGE,
+                        App::auth()::PERMISSION_CONTENT_ADMIN,
+                        Pages::PERMISSION_PAGES,
                     ]), App::blog()->id()),
 
             default => null

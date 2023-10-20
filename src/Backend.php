@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\cloneEntry;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Menus;
 use Dotclear\Core\Process;
 
@@ -37,7 +37,7 @@ class Backend extends Process
         // Add menu item in blog menu
         My::addBackendMenuItem(Menus::MENU_BLOG);
 
-        dcCore::app()->addBehaviors([
+        App::behavior()->addBehaviors([
             // Add behaviour callback for post
             'adminPostAfterForm' => BackendBehaviors::clonePost(...),
             // Add behaviour callback for page

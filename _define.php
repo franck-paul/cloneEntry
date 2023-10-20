@@ -17,14 +17,10 @@ $this->registerModule(
     '4.0.1',
     [
         'requires'    => [['core', '2.28']],
-        'permissions' => dcCore::app()->auth->makePermissions([
-            dcAuth::PERMISSION_USAGE,
-            dcAuth::PERMISSION_CONTENT_ADMIN,
-            initPages::PERMISSION_PAGES,
-        ]),
-        'type'     => 'plugin',
-        'priority' => 2000,
-        'settings' => [
+        'permissions' => 'My',
+        'type'        => 'plugin',
+        'priority'    => 2000,
+        'settings'    => [
         ],
 
         'details'    => 'https://open-time.net/?q=cloneEntry',

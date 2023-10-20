@@ -15,9 +15,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\cloneEntry;
 
 use ArrayObject;
-use dcBlog;
-use dcCore;
-use dcPostMedia;
 use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
@@ -28,6 +25,7 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Html;
+use Dotclear\Interface\Core\BlogInterface;
 use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
 class BackendBehaviors
@@ -38,7 +36,7 @@ class BackendBehaviors
             // Display clone button
             echo (new Para('clone-entry', 'div'))->class('clear')->items([
                 (new Form('clone-form'))
-                    ->action(dcCore::app()->adminurl->get('admin.plugin.cloneEntry'))
+                    ->action(App::backend()->url()->get('admin.plugin.cloneEntry'))
                     ->method('post')
                     ->fields([
                         (new Para())->items([
@@ -146,7 +144,7 @@ class BackendBehaviors
                     $post_id = $posts->post_id;
 
                     // Prepare new entry
-                    $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
+                    $cur = App::con()->openCursor(App::con()->prefix() . 'post');
 
                     if ($type == 'page') {
                         # Magic tweak :)
@@ -171,35 +169,35 @@ class BackendBehaviors
                     $cur->post_open_tb       = (int) $posts->post_open_tb;
                     $cur->post_selected      = (int) $posts->post_selected;
 
-                    $cur->post_status = dcBlog::POST_PENDING; // forced to pending
-                    $cur->user_id     = dcCore::app()->auth->userID();
+                    $cur->post_status = BlogInterface::POST_PENDING; // forced to pending
+                    $cur->user_id     = App::auth()->userID();
 
                     if ($type == 'post') {
                         # --BEHAVIOR-- adminBeforePostCreate
-                        dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
+                        App::behavior()->callBehavior('adminBeforePostCreate', $cur);
 
                         $return_id = App::blog()->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPostCreate
-                        dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $return_id);
+                        App::behavior()->callBehavior('adminAfterPostCreate', $cur, $return_id);
                     } else {
                         # --BEHAVIOR-- adminBeforePageCreate
-                        dcCore::app()->callBehavior('adminBeforePageCreate', $cur);
+                        App::behavior()->callBehavior('adminBeforePageCreate', $cur);
 
                         $return_id = App::blog()->addPost($cur);
 
                         # --BEHAVIOR-- adminAfterPageCreate
-                        dcCore::app()->callBehavior('adminAfterPageCreate', $cur, $return_id);
+                        App::behavior()->callBehavior('adminAfterPageCreate', $cur, $return_id);
                     }
 
                     // If old entry has meta data, duplicate them too
-                    $meta = dcCore::app()->meta->getMetadata(['post_id' => $post_id]);
+                    $meta = App::meta()->getMetadata(['post_id' => $post_id]);
                     while ($meta->fetch()) {
-                        dcCore::app()->meta->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                        App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
                     }
 
                     // If old entry has attached media, duplicate them too
-                    $postmedia = new dcPostMedia();
+                    $postmedia = App::postMedia();
                     $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                     while ($media->fetch()) {
                         $postmedia->addPostMedia($return_id, $media->media_id);
@@ -216,7 +214,7 @@ class BackendBehaviors
                     Page::breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
-                            __('Pages')                           => dcCore::app()->adminurl->get('admin.plugin.pages'),
+                            __('Pages')                           => App::backend()->url()->get('admin.plugin.pages'),
                             __('Clone selected pages')            => '',
                         ]
                     )
@@ -226,7 +224,7 @@ class BackendBehaviors
                     Page::breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
-                            __('Entries')                         => dcCore::app()->adminurl->get('admin.posts'),
+                            __('Entries')                         => App::backend()->url()->get('admin.posts'),
                             __('Clone selected posts')            => '',
                         ]
                     )
@@ -254,7 +252,7 @@ class BackendBehaviors
                     (new Hidden(['full_content'], 'true')),
                     (new Hidden(['action'], 'clone')),
                     (new Hidden(['process'], ($type === 'post' ? 'Posts' : 'Plugin'))),
-                    dcCore::app()->formNonce(false),
+                    App::nonce()->formNonce(),
                 ]),
             ])
             ->render();

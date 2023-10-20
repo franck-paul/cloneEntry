@@ -14,10 +14,9 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\cloneEntry;
 
-use dcCore;
-use dcNamespace;
 use Dotclear\App;
 use Dotclear\Core\Process;
+use Dotclear\Interface\Core\BlogWorkspaceInterface;
 use Exception;
 
 class Install extends Process
@@ -35,16 +34,16 @@ class Install extends Process
 
         try {
             // Update
-            $old_version = dcCore::app()->getVersion(My::id());
+            $old_version = App::version()->getVersion(My::id());
             if (version_compare((string) $old_version, '3.0', '<')) {
                 // Rename settings namespace
                 if (App::blog()->settings()->exists('cloneentry')) {
-                    App::blog()->settings()->delNamespace(My::id());
-                    App::blog()->settings()->renNamespace('cloneentry', My::id());
+                    App::blog()->settings()->delWorkspace(My::id());
+                    App::blog()->settings()->renWorkspace('cloneentry', My::id());
                 }
 
                 // Change settings names (remove ce_ prefix in them)
-                $rename = function (string $name, dcNamespace $settings): void {
+                $rename = function (string $name, BlogWorkspaceInterface $settings): void {
                     if ($settings->settingExists('ce_' . $name, true)) {
                         $settings->rename('ce_' . $name, $name);
                     }
@@ -64,10 +63,10 @@ class Install extends Process
             $settings = My::settings();
 
             // Default state is active
-            $settings->put('active_post', true, dcNamespace::NS_BOOL, 'Active for posts', false, true);
-            $settings->put('active_page', true, dcNamespace::NS_BOOL, 'Active for pages', false, true);
+            $settings->put('active_post', true, App::blogWorkspace()::NS_BOOL, 'Active for posts', false, true);
+            $settings->put('active_page', true, App::blogWorkspace()::NS_BOOL, 'Active for pages', false, true);
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         return true;
