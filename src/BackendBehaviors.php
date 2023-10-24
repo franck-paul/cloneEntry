@@ -25,7 +25,6 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Html;
-use Dotclear\Interface\Core\BlogInterface;
 use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
 class BackendBehaviors
@@ -169,7 +168,7 @@ class BackendBehaviors
                     $cur->post_open_tb       = (int) $posts->post_open_tb;
                     $cur->post_selected      = (int) $posts->post_selected;
 
-                    $cur->post_status = BlogInterface::POST_PENDING; // forced to pending
+                    $cur->post_status = App::blog()::POST_PENDING; // forced to pending
                     $cur->user_id     = App::auth()->userID();
 
                     if ($type == 'post') {

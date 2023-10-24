@@ -25,7 +25,6 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Network\Http;
-use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class Manage extends Process
@@ -92,7 +91,7 @@ class Manage extends Process
                 $cur->post_open_tb       = (int) $post->post_open_tb;
                 $cur->post_selected      = (int) $post->post_selected;
 
-                $cur->post_status = BlogInterface::POST_PENDING; // forced to pending
+                $cur->post_status = App::blog()::POST_PENDING; // forced to pending
                 $cur->user_id     = App::auth()->userID();
 
                 if ($post_type == 'post') {
