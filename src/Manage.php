@@ -122,7 +122,7 @@ class Manage extends Process
                 $postmedia = App::postMedia();
                 $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                 while ($media->fetch()) {
-                    $postmedia->addPostMedia($return_id, $media->media_id);
+                    $postmedia->addPostMedia($return_id, (int) $media->media_id);
                 }
 
                 Notices::addSuccessNotice(__('Entry has been successfully cloned.'));
