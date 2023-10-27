@@ -43,7 +43,7 @@ class Install extends Process
                 }
 
                 // Change settings names (remove ce_ prefix in them)
-                $rename = function (string $name, BlogWorkspaceInterface $settings): void {
+                $rename = static function (string $name, BlogWorkspaceInterface $settings) : void {
                     if ($settings->settingExists('ce_' . $name, true)) {
                         $settings->rename('ce_' . $name, $name);
                     }
@@ -65,8 +65,8 @@ class Install extends Process
             // Default state is active
             $settings->put('active_post', true, App::blogWorkspace()::NS_BOOL, 'Active for posts', false, true);
             $settings->put('active_page', true, App::blogWorkspace()::NS_BOOL, 'Active for pages', false, true);
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return true;

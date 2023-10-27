@@ -82,14 +82,12 @@ class BackendBehaviors
     public static function clonePosts(ActionsPosts $ap): string
     {
         $settings = My::settings();
-        if ($settings->active_post) {
-            // Add menuitem in actions dropdown list
-            if (My::checkContext(My::BACKEND)) {
-                $ap->addAction(
-                    [__('Clone') => [__('Clone selected posts') => 'clone']],
-                    self::doClonePosts(...)
-                );
-            }
+        // Add menuitem in actions dropdown list
+        if ($settings->active_post && My::checkContext(My::BACKEND)) {
+            $ap->addAction(
+                [__('Clone') => [__('Clone selected posts') => 'clone']],
+                self::doClonePosts(...)
+            );
         }
 
         return '';
@@ -98,14 +96,12 @@ class BackendBehaviors
     public static function clonePages(PagesBackendActions $ap): string
     {
         $settings = My::settings();
-        if ($settings->active_page) {
-            // Add menuitem in actions dropdown list
-            if (My::checkContext(My::BACKEND)) {
-                $ap->addAction(
-                    [__('Clone') => [__('Clone selected pages') => 'clone']],
-                    self::doClonePages(...)
-                );
-            }
+        // Add menuitem in actions dropdown list
+        if ($settings->active_page && My::checkContext(My::BACKEND)) {
+            $ap->addAction(
+                [__('Clone') => [__('Clone selected pages') => 'clone']],
+                self::doClonePages(...)
+            );
         }
 
         return '';
@@ -202,6 +198,7 @@ class BackendBehaviors
                         $postmedia->addPostMedia($return_id, $media->media_id);
                     }
                 }
+
                 $ap->redirect(true, ['upd' => 1]);
             } else {
                 $ap->redirect();

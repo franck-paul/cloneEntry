@@ -134,24 +134,22 @@ class Manage extends Process
             }
         }
 
-        if (My::checkContext(My::MANAGE)) {
-            // Real management scope
-            if (!empty($_POST['saveconfig'])) {
-                try {
-                    $active_post = (empty($_POST['active_post'])) ? false : true;
-                    $active_page = (empty($_POST['active_page'])) ? false : true;
+        // Real management scope
+        if (My::checkContext(My::MANAGE) && !empty($_POST['saveconfig'])) {
+            try {
+                $active_post = !empty($_POST['active_post']);
+                $active_page = !empty($_POST['active_page']);
 
-                    $settings = My::settings();
-                    $settings->put('active_post', $active_post, App::blogWorkspace()::NS_BOOL);
-                    $settings->put('active_page', $active_page, App::blogWorkspace()::NS_BOOL);
+                $settings = My::settings();
+                $settings->put('active_post', $active_post, App::blogWorkspace()::NS_BOOL);
+                $settings->put('active_page', $active_page, App::blogWorkspace()::NS_BOOL);
 
-                    App::blog()->triggerBlog();
+                App::blog()->triggerBlog();
 
-                    Notices::addSuccessNotice(__('Configuration successfully updated.'));
-                    My::redirect();
-                } catch (Exception $e) {
-                    App::error()->add($e->getMessage());
-                }
+                Notices::addSuccessNotice(__('Configuration successfully updated.'));
+                My::redirect();
+            } catch (Exception $e) {
+                App::error()->add($e->getMessage());
             }
         }
 
