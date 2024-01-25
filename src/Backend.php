@@ -38,9 +38,11 @@ class Backend extends Process
 
         App::behavior()->addBehaviors([
             // Add behaviour callback for post
-            'adminPostAfterForm' => BackendBehaviors::clonePost(...),
+            'adminPostAfterButtons' => BackendBehaviors::clonePostButtons(...),
+            'adminPostAfterForm'    => BackendBehaviors::clonePost(...),
             // Add behaviour callback for page
-            'adminPageAfterForm' => BackendBehaviors::clonePage(...),
+            'adminPageAfterButtons' => BackendBehaviors::clonePageButtons(...),
+            'adminPageAfterForm'    => BackendBehaviors::clonePage(...),
 
             /* Add behavior callbacks for posts actions */
             'adminPostsActions' => BackendBehaviors::clonePosts(...),

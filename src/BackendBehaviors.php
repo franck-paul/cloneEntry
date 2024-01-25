@@ -29,6 +29,27 @@ use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
 class BackendBehaviors
 {
+    private static function cloneEntryButtons(?MetaRecord $post): void
+    {
+        if (!is_null($post)) {
+            // Display clone button
+            echo (new Para('clone-entry-buttons', 'div'))->items([
+                (new Para())->items([
+                    (new Submit(['clone'], __('Clone this entry')))->class('clone')->form('clone-form'),
+                ]),
+                (new Para())->class('form-note')->items([
+                    (new Text(
+                        null,
+                        __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br>' .
+                        __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br>' .
+                        __('The category, tags, attachments and other properties will be preserved.')
+                    )),
+                ]),
+            ])
+            ->render();
+        }
+    }
+
     private static function cloneEntry(?MetaRecord $post): void
     {
         if (!is_null($post)) {
@@ -38,20 +59,9 @@ class BackendBehaviors
                     ->action(App::backend()->url()->get('admin.plugin.cloneEntry'))
                     ->method('post')
                     ->fields([
-                        (new Para())->items([
-                            (new Submit(['clone'], __('Clone this entry')))->class('clone'),
-                            ... My::hiddenFields([
-                                'clone_id'   => $post->post_id,
-                                'clone_type' => $post->post_type,
-                            ]),
-                        ]),
-                        (new Para())->class('form-note')->items([
-                            (new Text(
-                                null,
-                                __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
-                                __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
-                                __('The category, tags, attachments and other properties will be preserved.')
-                            )),
+                        ...My::hiddenFields([
+                            'clone_id'   => $post->post_id,
+                            'clone_type' => $post->post_type,
                         ]),
                     ]),
             ])
@@ -59,11 +69,31 @@ class BackendBehaviors
         }
     }
 
+    public static function clonePostButtons(?MetaRecord $post): string
+    {
+        $settings = My::settings();
+        if ($settings->active_post) {
+            self::cloneEntryButtons($post);
+        }
+
+        return '';
+    }
+
     public static function clonePost(?MetaRecord $post): string
     {
         $settings = My::settings();
         if ($settings->active_post) {
             self::cloneEntry($post);
+        }
+
+        return '';
+    }
+
+    public static function clonePageButtons(?MetaRecord $post): string
+    {
+        $settings = My::settings();
+        if ($settings->active_page) {
+            self::cloneEntryButtons($post);
         }
 
         return '';
@@ -238,8 +268,8 @@ class BackendBehaviors
                 (new Para())->class('form-note')->items([
                     (new Text(
                         null,
-                        __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br />' .
-                        __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br />' .
+                        __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br>' .
+                        __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br>' .
                         __('The category, tags, attachments and other properties will be preserved.')
                     )),
                 ]),
