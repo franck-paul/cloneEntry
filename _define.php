@@ -14,7 +14,7 @@ $this->registerModule(
     'Clone Entry',
     'Make a clone of entry',
     'Franck Paul',
-    '6.0',
+    '6.1',
     [
         'requires'    => [['core', '2.29']],
         'permissions' => 'My',
