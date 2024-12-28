@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief cloneEntry, a plugin for Dotclear 2
  *
@@ -160,7 +161,7 @@ class BackendBehaviors
      * @param      ArrayObject<string, mixed>           $post   The post
      * @param      string                               $type   The type
      */
-    private static function doCloneEntries(ActionsPosts|PagesBackendActions $ap, ArrayObject $post, $type = 'post'): void
+    private static function doCloneEntries(ActionsPosts|PagesBackendActions $ap, ArrayObject $post, string $type = 'post'): void
     {
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
@@ -171,7 +172,7 @@ class BackendBehaviors
                     // Prepare new entry
                     $cur = App::con()->openCursor(App::con()->prefix() . 'post');
 
-                    if ($type == 'page') {
+                    if ($type === 'page') {
                         # Magic tweak :)
                         App::blog()->settings()->system->post_url_format = '{t}';
                     }
@@ -197,7 +198,7 @@ class BackendBehaviors
                     $cur->post_status = App::blog()::POST_PENDING; // forced to pending
                     $cur->user_id     = App::auth()->userID();
 
-                    if ($type == 'post') {
+                    if ($type === 'post') {
                         # --BEHAVIOR-- adminBeforePostCreate
                         App::behavior()->callBehavior('adminBeforePostCreate', $cur);
 
@@ -235,7 +236,7 @@ class BackendBehaviors
             }
         } else {
             // Ask confirmation before cloning
-            if ($type == 'page') {
+            if ($type === 'page') {
                 $ap->beginPage(
                     Page::breadcrumb(
                         [
