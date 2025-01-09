@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief cloneEntry, a plugin for Dotclear 2
  *
@@ -91,7 +92,7 @@ class Manage extends Process
                 $cur->post_open_tb       = (int) $post->post_open_tb;
                 $cur->post_selected      = (int) $post->post_selected;
 
-                $cur->post_status = App::blog()::POST_PENDING; // forced to pending
+                $cur->post_status = App::status()->post()::PENDING; // forced to pending
                 $cur->user_id     = App::auth()->userID();
 
                 if ($post_type == 'post') {

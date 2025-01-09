@@ -195,7 +195,7 @@ class BackendBehaviors
                     $cur->post_open_tb       = (int) $posts->post_open_tb;
                     $cur->post_selected      = (int) $posts->post_selected;
 
-                    $cur->post_status = App::blog()::POST_PENDING; // forced to pending
+                    $cur->post_status = App::status()->post()::PENDING; // forced to pending
                     $cur->user_id     = App::auth()->userID();
 
                     if ($type === 'post') {

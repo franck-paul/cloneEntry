@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief cloneEntry, a plugin for Dotclear 2
  *
@@ -16,7 +17,7 @@ $this->registerModule(
     'Franck Paul',
     '6.1',
     [
-        'requires'    => [['core', '2.29']],
+        'requires'    => [['core', '2.33']],
         'permissions' => 'My',
         'type'        => 'plugin',
         'priority'    => 2000,
