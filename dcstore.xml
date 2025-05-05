@@ -1,11 +1,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="cloneEntry">
     <name>Clone Entry</name>
-    <version>7.1</version>
+    <version>7.2</version>
     <author>Franck Paul</author>
     <desc>Make a clone of entry</desc>
-    <date>2025-05-05T14:44:23+0200</date>
-    <file>https://github.com/franck-paul/cloneEntry/releases/download/7.1/plugin-cloneEntry-7.1.zip</file>
+    <date>2025-05-05T22:04:03+0200</date>
+    <file>https://github.com/franck-paul/cloneEntry/releases/download/7.2/plugin-cloneEntry-7.2.zip</file>
     <da:dcmin>2.33</da:dcmin>
     <da:details>https://open-time.net/?q=cloneEntry</da:details>
     <da:support>https://github.com/franck-paul/cloneEntry</da:support>
