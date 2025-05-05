@@ -20,8 +20,10 @@ use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
+use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Note;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
@@ -34,19 +36,20 @@ class BackendBehaviors
     {
         if (!is_null($post)) {
             // Display clone button
-            echo (new Para('clone-entry-buttons', 'div'))->items([
-                (new Para())->items([
-                    (new Submit(['clone'], __('Clone this entry')))->class('clone')->form('clone-form'),
-                ]),
-                (new Para())->class('form-note')->items([
-                    (new Text(
-                        null,
-                        __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br>' .
-                        __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br>' .
-                        __('The category, tags, attachments and other properties will be preserved.')
-                    )),
-                ]),
-            ])
+            echo (new Div('clone-entry-buttons'))
+                ->items([
+                    (new Para())
+                        ->items([
+                            (new Submit(['clone'], __('Clone this entry')))->class('clone')->form('clone-form'),
+                        ]),
+                    (new Note())
+                        ->class('form-note')
+                        ->text(
+                            __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br>' .
+                            __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br>' .
+                            __('The category, tags, attachments and other properties will be preserved.')
+                        ),
+                ])
             ->render();
         }
     }
@@ -263,24 +266,25 @@ class BackendBehaviors
             ->method('post')
             ->fields([
                 (new Text(null, $ap->getCheckboxes())),
-                (new Para())->items([
-                    (new Submit(['clone'], __('Clone'))),
-                ]),
-                (new Para())->class('form-note')->items([
-                    (new Text(
-                        null,
+                (new Para())
+                    ->items([
+                        (new Submit(['clone'], __('Clone'))),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(
                         __('The status of the new entry will be set <strong>to Pending</strong>.') . '<br>' .
                         __('It\'s date and time will bet set to now and it\'s URL would reflect this.') . '<br>' .
                         __('The category, tags, attachments and other properties will be preserved.')
-                    )),
-                ]),
-                (new Para())->items([
-                    (new Text(null, $ap->getHiddenFields())),
-                    (new Hidden(['full_content'], 'true')),
-                    (new Hidden(['action'], 'clone')),
-                    (new Hidden(['process'], ($type === 'post' ? 'Posts' : 'Plugin'))),
-                    App::nonce()->formNonce(),
-                ]),
+                    ),
+                (new Para())
+                    ->items([
+                        (new Text(null, $ap->getHiddenFields())),
+                        (new Hidden(['full_content'], 'true')),
+                        (new Hidden(['action'], 'clone')),
+                        (new Hidden(['process'], ($type === 'post' ? 'Posts' : 'Plugin'))),
+                        App::nonce()->formNonce(),
+                    ]),
             ])
             ->render();
 

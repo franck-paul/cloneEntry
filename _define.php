@@ -28,5 +28,6 @@ $this->registerModule(
         'details'    => 'https://open-time.net/?q=cloneEntry',
         'support'    => 'https://github.com/franck-paul/cloneEntry',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/main/dcstore.xml',
+        'license'    => 'gpl2',
     ]
 );
