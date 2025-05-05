@@ -58,17 +58,19 @@ class BackendBehaviors
     {
         if (!is_null($post)) {
             // Display clone button
-            echo (new Para('clone-entry', 'div'))->class('clear')->items([
-                (new Form('clone-form'))
-                    ->action(App::backend()->url()->get('admin.plugin.cloneEntry'))
-                    ->method('post')
-                    ->fields([
-                        ...My::hiddenFields([
-                            'clone_id'   => $post->post_id,
-                            'clone_type' => $post->post_type,
+            echo (new Div('clone-entry'))
+                ->class('clear')
+                ->items([
+                    (new Form('clone-form'))
+                        ->action(App::backend()->url()->get('admin.plugin.cloneEntry'))
+                        ->method('post')
+                        ->fields([
+                            ...My::hiddenFields([
+                                'clone_id'   => $post->post_id,
+                                'clone_type' => $post->post_type,
+                            ]),
                         ]),
-                    ]),
-            ])
+                ])
             ->render();
         }
     }
