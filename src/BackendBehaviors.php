@@ -175,7 +175,7 @@ class BackendBehaviors
                     $post_id = $posts->post_id;
 
                     // Prepare new entry
-                    $cur = App::con()->openCursor(App::con()->prefix() . 'post');
+                    $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . 'post');
 
                     if ($type === 'page') {
                         # Magic tweak :)

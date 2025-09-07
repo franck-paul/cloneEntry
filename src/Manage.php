@@ -18,7 +18,6 @@ namespace Dotclear\Plugin\cloneEntry;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
-use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Label;
@@ -26,10 +25,13 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Network\Http;
+use Dotclear\Helper\Process\TraitProcess;
 use Exception;
 
-class Manage extends Process
+class Manage
 {
+    use TraitProcess;
+
     /**
      * Initializes the page.
      */
@@ -68,7 +70,7 @@ class Manage extends Process
                     Http::redirect(App::postTypes()->get($post_type)->adminUrl($post_id));
                 }
 
-                $cur = App::con()->openCursor(App::con()->prefix() . 'post');
+                $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . 'post');
 
                 if ($post_type == 'page') {
                     # Magic tweak :)
