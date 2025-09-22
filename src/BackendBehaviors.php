@@ -18,7 +18,6 @@ namespace Dotclear\Plugin\cloneEntry;
 use ArrayObject;
 use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Form;
@@ -243,7 +242,7 @@ class BackendBehaviors
             // Ask confirmation before cloning
             if ($type === 'page') {
                 $ap->beginPage(
-                    Page::breadcrumb(
+                    App::backend()->page()->breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
                             __('Pages')                           => App::backend()->url()->get('admin.plugin.pages'),
@@ -253,7 +252,7 @@ class BackendBehaviors
                 );
             } else {
                 $ap->beginPage(
-                    Page::breadcrumb(
+                    App::backend()->page()->breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
                             __('Entries')                         => App::backend()->url()->get('admin.posts'),

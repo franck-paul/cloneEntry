@@ -16,8 +16,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\cloneEntry;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Notices;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Label;
@@ -128,7 +126,7 @@ class Manage
                     $postmedia->addPostMedia($return_id, (int) $media->media_id);
                 }
 
-                Notices::addSuccessNotice(__('Entry has been successfully cloned.'));
+                App::backend()->notices()->addSuccessNotice(__('Entry has been successfully cloned.'));
 
                 // Go to entry edit page
                 Http::redirect(App::postTypes()->get($post_type)->adminUrl($return_id, false));
@@ -149,7 +147,7 @@ class Manage
 
                 App::blog()->triggerBlog();
 
-                Notices::addSuccessNotice(__('Configuration successfully updated.'));
+                App::backend()->notices()->addSuccessNotice(__('Configuration successfully updated.'));
                 My::redirect();
             } catch (Exception $e) {
                 App::error()->add($e->getMessage());
@@ -179,15 +177,15 @@ class Manage
         $active_post = (bool) $settings->active_post;
         $active_page = (bool) $settings->active_page;
 
-        Page::openModule(My::name());
+        App::backend()->page()->openModule(My::name());
 
-        echo Page::breadcrumb(
+        echo App::backend()->page()->breadcrumb(
             [
                 Html::escapeHTML(App::blog()->name()) => '',
                 __('Clone Entry')                     => '',
             ]
         );
-        echo Notices::getNotices();
+        echo App::backend()->notices()->getNotices();
 
         // Form
         echo (new Form('options'))
@@ -212,6 +210,6 @@ class Manage
             ])
             ->render();
 
-        Page::closeModule();
+        App::backend()->page()->closeModule();
     }
 }
