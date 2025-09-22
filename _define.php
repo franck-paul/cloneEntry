@@ -15,9 +15,9 @@ $this->registerModule(
     'Clone Entry',
     'Make a clone of entry',
     'Franck Paul',
-    '8.0',
+    '8.1',
     [
-        'date'        => '2025-09-07T18:37:30+0200',
+        'date'        => '2025-09-22T10:35:42+0200',
         'requires'    => [['core', '2.36']],
         'permissions' => 'My',
         'type'        => 'plugin',
