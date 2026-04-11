@@ -8,7 +8,7 @@
  *
  * @author Franck Paul and contributors
  *
- * @copyright Franck Paul carnet.franck.paul@gmail.com
+ * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 declare(strict_types=1);
@@ -51,8 +51,11 @@ class Manage
 
         if (!empty($_POST['clone'])) {
             try {
-                $post_id   = $_POST['clone_id'];
-                $post_type = $_POST['clone_type'];
+                $post_id   = isset($_POST['clone_id'])   && is_numeric($post_id = $_POST['clone_id']) ? (int) $post_id : 0;
+                $post_type = isset($_POST['clone_type']) && is_string($post_type = $_POST['clone_type']) ? $post_type : '';
+                if ($post_id === 0 || $post_type === '') {
+                    throw new Exception(__('Unable to clone the entry.'));
+                }
 
                 // Duplicate entry
 
@@ -70,7 +73,7 @@ class Manage
 
                 $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . 'post');
 
-                if ($post_type == 'page') {
+                if ($post_type === 'page') {
                     # Magic tweak :)
                     App::blog()->settings()->system->post_url_format = '{t}';
                 }
@@ -88,14 +91,14 @@ class Manage
                 $cur->post_content_xhtml = $post->post_content_xhtml;
                 $cur->post_notes         = $post->post_notes;
                 $cur->post_position      = $post->post_position;
-                $cur->post_open_comment  = (int) $post->post_open_comment;
-                $cur->post_open_tb       = (int) $post->post_open_tb;
-                $cur->post_selected      = (int) $post->post_selected;
+                $cur->post_open_comment  = $post->post_open_comment;
+                $cur->post_open_tb       = $post->post_open_tb;
+                $cur->post_selected      = $post->post_selected;
 
                 $cur->post_status = App::status()->post()::PENDING; // forced to pending
                 $cur->user_id     = App::auth()->userID();
 
-                if ($post_type == 'post') {
+                if ($post_type === 'post') {
                     # --BEHAVIOR-- adminBeforePostCreate
                     App::behavior()->callBehavior('adminBeforePostCreate', $cur);
 
@@ -116,14 +119,19 @@ class Manage
                 // If old entry has meta data, duplicate them too
                 $meta = App::meta()->getMetadata(['post_id' => $post_id]);
                 while ($meta->fetch()) {
-                    App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                    if (is_string($meta->meta_type) && is_string($meta->meta_id)) {
+                        App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                    }
                 }
 
                 // If old entry has attached media, duplicate them too
                 $postmedia = App::postMedia();
                 $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                 while ($media->fetch()) {
-                    $postmedia->addPostMedia($return_id, (int) $media->media_id);
+                    $media_id = is_numeric($media_id = $media->media_id) ? (int) $media_id : 0;
+                    if ($media_id > 0) {
+                        $postmedia->addPostMedia($return_id, $media_id);
+                    }
                 }
 
                 App::backend()->notices()->addSuccessNotice(__('Entry has been successfully cloned.'));
