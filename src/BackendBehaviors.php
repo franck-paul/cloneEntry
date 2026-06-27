@@ -173,7 +173,7 @@ class BackendBehaviors
     {
         if (!empty($post['full_content'])) {
             $posts = $ap->getRS();
-            if ($posts->rows()) {
+            if ($posts->rows() !== []) {
                 while ($posts->fetch()) {
                     $post_id = is_numeric($post_id = $posts->post_id) ? (int) $post_id : 0;
                     if ($post_id > 0) {
