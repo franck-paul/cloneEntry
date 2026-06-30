@@ -56,8 +56,8 @@ class BackendBehaviors
     private static function cloneEntry(?MetaRecord $post): void
     {
         if (!is_null($post)) {
-            $post_id   = is_numeric($post_id = $post->post_id) ? (int) $post_id : 0;
-            $post_type = is_string($post_type = $post->post_type) ? $post_type : '';
+            $post_id   = $post->intField('post_id');
+            $post_type = $post->strField('post_type');
             if ($post_id !== 0 && $post_type !== '') {
                 // Display clone button
                 echo (new Div('clone-entry'))
@@ -175,7 +175,7 @@ class BackendBehaviors
             $posts = $ap->getRS();
             if ($posts->rows() !== []) {
                 while ($posts->fetch()) {
-                    $post_id = is_numeric($post_id = $posts->post_id) ? (int) $post_id : 0;
+                    $post_id = $posts->intField('post_id');
                     if ($post_id > 0) {
                         // Prepare new entry
                         $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . 'post');
@@ -236,7 +236,7 @@ class BackendBehaviors
                         $postmedia = App::postMedia();
                         $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                         while ($media->fetch()) {
-                            $media_id = is_numeric($media_id = $media->media_id) ? (int) $media_id : 0;
+                            $media_id = $media->intField('media_id');
                             if ($media_id > 0) {
                                 $postmedia->addPostMedia($return_id, $media_id);
                             }
