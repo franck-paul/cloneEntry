@@ -128,8 +128,8 @@ class Manage
                 $postmedia = App::postMedia();
                 $media     = $postmedia->getPostMedia(['post_id' => $post_id]);
                 while ($media->fetch()) {
-                    $media_id = is_numeric($media_id = $media->media_id) ? (int) $media_id : 0;
-                    if ($media_id > 0) {
+                    $media_id = $media->intField('media_id');
+                    if ($media_id !== 0) {
                         $postmedia->addPostMedia($return_id, $media_id);
                     }
                 }
