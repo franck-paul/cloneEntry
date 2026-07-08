@@ -81,7 +81,7 @@ class BackendBehaviors
     public static function clonePostButtons(?MetaRecord $post): string
     {
         $settings = My::settings();
-        if ($settings->active_post) {
+        if ($settings->getBool('active_post')) {
             self::cloneEntryButtons($post);
         }
 
@@ -91,7 +91,7 @@ class BackendBehaviors
     public static function clonePost(?MetaRecord $post): string
     {
         $settings = My::settings();
-        if ($settings->active_post) {
+        if ($settings->getBool('active_post')) {
             self::cloneEntry($post);
         }
 
@@ -101,7 +101,7 @@ class BackendBehaviors
     public static function clonePageButtons(?MetaRecord $post): string
     {
         $settings = My::settings();
-        if ($settings->active_page) {
+        if ($settings->getBool('active_page')) {
             self::cloneEntryButtons($post);
         }
 
@@ -111,7 +111,7 @@ class BackendBehaviors
     public static function clonePage(?MetaRecord $post): string
     {
         $settings = My::settings();
-        if ($settings->active_page) {
+        if ($settings->getBool('active_page')) {
             self::cloneEntry($post);
         }
 
@@ -122,7 +122,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
-        if ($settings->active_post && My::checkContext(My::BACKEND)) {
+        if ($settings->getBool('active_post') && My::checkContext(My::BACKEND)) {
             $ap->addAction(
                 [__('Clone') => [__('Clone selected posts') => 'clone']],
                 self::doClonePosts(...)
@@ -136,7 +136,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
-        if ($settings->active_page && My::checkContext(My::BACKEND)) {
+        if ($settings->getBool('active_page') && My::checkContext(My::BACKEND)) {
             $ap->addAction(
                 [__('Clone') => [__('Clone selected pages') => 'clone']],
                 self::doClonePages(...)
@@ -182,7 +182,7 @@ class BackendBehaviors
 
                         if ($type === 'page') {
                             # Magic tweak :)
-                            App::blog()->settings()->system->post_url_format = '{t}';
+                            App::blog()->settings()->get('system')->set('post_url_format', '{t}');
                         }
 
                         // Duplicate entry contents and options

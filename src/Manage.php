@@ -75,7 +75,7 @@ class Manage
 
                 if ($post_type === 'page') {
                     # Magic tweak :)
-                    App::blog()->settings()->system->post_url_format = '{t}';
+                    App::blog()->settings()->get('system')->set('post_url_format', '{t}');
                 }
 
                 // Duplicate entry contents and options
@@ -182,8 +182,8 @@ class Manage
         // Getting current parameters
         $settings = My::settings();
 
-        $active_post = (bool) $settings->active_post;
-        $active_page = (bool) $settings->active_page;
+        $active_post = $settings->getBool('active_post', false);
+        $active_page = $settings->getBool('active_page', false);
 
         App::backend()->page()->openModule(My::name());
 
