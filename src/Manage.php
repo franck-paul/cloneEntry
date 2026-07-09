@@ -80,20 +80,20 @@ class Manage
 
                 // Duplicate entry contents and options
                 $cur->post_type          = $post_type;
-                $cur->post_title         = $post->post_title;
-                $cur->cat_id             = $post->cat_id;
-                $cur->post_format        = $post->post_format;
-                $cur->post_password      = $post->post_password;
-                $cur->post_lang          = $post->post_lang;
-                $cur->post_excerpt       = $post->post_excerpt;
-                $cur->post_excerpt_xhtml = $post->post_excerpt_xhtml;
-                $cur->post_content       = $post->post_content;
-                $cur->post_content_xhtml = $post->post_content_xhtml;
-                $cur->post_notes         = $post->post_notes;
-                $cur->post_position      = $post->post_position;
-                $cur->post_open_comment  = $post->post_open_comment;
-                $cur->post_open_tb       = $post->post_open_tb;
-                $cur->post_selected      = $post->post_selected;
+                $cur->post_title         = $post->strField('post_title', true);
+                $cur->cat_id             = $post->intField('cat_id', true);
+                $cur->post_format        = $post->strField('post_format', true);
+                $cur->post_password      = $post->strField('post_password', true);
+                $cur->post_lang          = $post->strField('post_lang', true);
+                $cur->post_excerpt       = $post->strField('post_excerpt', true);
+                $cur->post_excerpt_xhtml = $post->strField('post_excerpt_xhtml', true);
+                $cur->post_content       = $post->strField('post_content', true);
+                $cur->post_content_xhtml = $post->strField('post_content_xhtml', true);
+                $cur->post_notes         = $post->strField('post_notes', true);
+                $cur->post_position      = $post->intField('post_position', true);
+                $cur->post_open_comment  = $post->boolField('post_open_comment', true);
+                $cur->post_open_tb       = $post->boolField('post_open_tb', true);
+                $cur->post_selected      = $post->boolField('post_selected', true);
 
                 $cur->post_status = App::status()->post()::PENDING; // forced to pending
                 $cur->user_id     = App::auth()->userID();
@@ -119,8 +119,8 @@ class Manage
                 // If old entry has meta data, duplicate them too
                 $meta = App::meta()->getMetadata(['post_id' => $post_id]);
                 while ($meta->fetch()) {
-                    if (is_string($meta->meta_type) && is_string($meta->meta_id)) {
-                        App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                    if ($meta->strField('meta_type') !== '' && $meta->strField('meta_id') !== '') {
+                        App::meta()->setPostMeta($return_id, $meta->strField('meta_type'), $meta->strField('meta_id'));
                     }
                 }
 

@@ -187,21 +187,21 @@ class BackendBehaviors
 
                         // Duplicate entry contents and options
                         $cur->post_type          = $type;
-                        $cur->post_title         = $posts->post_title;
-                        $cur->cat_id             = $posts->cat_id;
-                        $cur->post_format        = $posts->post_format;
-                        $cur->post_password      = $posts->post_password;
-                        $cur->post_lang          = $posts->post_lang;
-                        $cur->post_title         = $posts->post_title;
-                        $cur->post_excerpt       = $posts->post_excerpt;
-                        $cur->post_excerpt_xhtml = $posts->post_excerpt_xhtml;
-                        $cur->post_content       = $posts->post_content;
-                        $cur->post_content_xhtml = $posts->post_content_xhtml;
-                        $cur->post_notes         = $posts->post_notes;
-                        $cur->post_position      = $posts->post_position;
-                        $cur->post_open_comment  = $posts->post_open_comment;
-                        $cur->post_open_tb       = $posts->post_open_tb;
-                        $cur->post_selected      = $posts->post_selected;
+                        $cur->post_title         = $posts->strField('post_title', true);
+                        $cur->cat_id             = $posts->intField('cat_id', true);
+                        $cur->post_format        = $posts->strField('post_format', true);
+                        $cur->post_password      = $posts->strField('post_password', true);
+                        $cur->post_lang          = $posts->strField('post_lang', true);
+                        $cur->post_title         = $posts->strField('post_title', true);
+                        $cur->post_excerpt       = $posts->strField('post_excerpt', true);
+                        $cur->post_excerpt_xhtml = $posts->strField('post_excerpt_xhtml', true);
+                        $cur->post_content       = $posts->strField('post_content', true);
+                        $cur->post_content_xhtml = $posts->strField('post_content_xhtml', true);
+                        $cur->post_notes         = $posts->strField('post_notes', true);
+                        $cur->post_position      = $posts->intField('post_position', true);
+                        $cur->post_open_comment  = $posts->boolField('post_open_comment', true);
+                        $cur->post_open_tb       = $posts->boolField('post_open_tb', true);
+                        $cur->post_selected      = $posts->boolField('post_selected');
 
                         $cur->post_status = App::status()->post()::PENDING; // forced to pending
                         $cur->user_id     = App::auth()->userID();
@@ -227,8 +227,8 @@ class BackendBehaviors
                         // If old entry has meta data, duplicate them too
                         $meta = App::meta()->getMetadata(['post_id' => $post_id]);
                         while ($meta->fetch()) {
-                            if (is_string($meta->meta_type) && is_string($meta->meta_id)) {
-                                App::meta()->setPostMeta($return_id, $meta->meta_type, $meta->meta_id);
+                            if ($meta->strField('meta_type') !== '' && $meta->strField('meta_id') !== '') {
+                                App::meta()->setPostMeta($return_id, $meta->strField('meta_type'), $meta->strField('meta_id'));
                             }
                         }
 
