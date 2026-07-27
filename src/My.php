@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief cloneEntry, a plugin for Dotclear 2
  *
@@ -34,12 +35,13 @@ class My extends MyPlugin
     {
         return match ($context) {
             self::BACKEND => App::task()->checkContext('BACKEND')
-                    // Check specific permission
-                    && App::blog()->isDefined() && App::auth()->check(App::auth()->makePermissions([
-                        App::auth()::PERMISSION_USAGE,
-                        App::auth()::PERMISSION_CONTENT_ADMIN,
-                        Pages::PERMISSION_PAGES,
-                    ]), App::blog()->id()),
+                // Check specific permission
+                && App::blog()->isDefined()
+                && App::auth()->check(App::auth()->makePermissions([
+                    App::auth()::PERMISSION_USAGE,
+                    App::auth()::PERMISSION_CONTENT_ADMIN,
+                    Pages::PERMISSION_PAGES,
+                ]), App::blog()->id()),
 
             default => null
         };
