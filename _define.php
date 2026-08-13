@@ -11,23 +11,27 @@
  * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-$this->registerModule(
-    'Clone Entry',
-    'Make a clone of entry',
-    'Franck Paul',
-    '9.0',
-    [
-        'date'        => '2026-08-03T09:48:47+0200',
-        'requires'    => [['core', '2.39']],
-        'permissions' => 'My',
-        'type'        => 'plugin',
-        'priority'    => 2000,
-        'settings'    => [
-        ],
+declare(strict_types=1);
 
-        'details'    => 'https://open-time.net/?q=cloneEntry',
-        'support'    => 'https://github.com/franck-paul/cloneEntry',
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/main/dcstore.xml',
-        'license'    => 'gpl2',
-    ]
-);
+if (isset($this) && is_object($this) && method_exists($this, 'registerModule') && isset($this->id) && is_string($this->id)) {
+    $this->registerModule(
+        'Clone Entry',
+        'Make a clone of entry',
+        'Franck Paul',
+        '9.0',
+        [
+            'date'        => '2026-08-03T09:48:47+0200',
+            'requires'    => [['core', '2.39']],
+            'permissions' => 'My',
+            'type'        => 'plugin',
+            'priority'    => 2000,
+            'settings'    => [
+            ],
+
+            'details'    => 'https://open-time.net/?q=cloneEntry',
+            'support'    => 'https://github.com/franck-paul/cloneEntry',
+            'repository' => 'https://raw.githubusercontent.com/franck-paul/cloneEntry/main/dcstore.xml',
+            'license'    => 'gpl2',
+        ]
+    );
+}
