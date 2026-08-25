@@ -79,24 +79,24 @@ class Manage
                 }
 
                 // Duplicate entry contents and options
-                $cur->post_type          = $post_type;
-                $cur->post_title         = $post->strField('post_title', true);
-                $cur->cat_id             = $post->intField('cat_id', true);
-                $cur->post_format        = $post->strField('post_format', true);
-                $cur->post_password      = $post->strField('post_password', true);
-                $cur->post_lang          = $post->strField('post_lang', true);
-                $cur->post_excerpt       = $post->strField('post_excerpt', true);
-                $cur->post_excerpt_xhtml = $post->strField('post_excerpt_xhtml', true);
-                $cur->post_content       = $post->strField('post_content', true);
-                $cur->post_content_xhtml = $post->strField('post_content_xhtml', true);
-                $cur->post_notes         = $post->strField('post_notes', true);
-                $cur->post_position      = $post->intField('post_position', true);
-                $cur->post_open_comment  = $post->boolField('post_open_comment', true);
-                $cur->post_open_tb       = $post->boolField('post_open_tb', true);
-                $cur->post_selected      = $post->boolField('post_selected', true);
+                $cur->setStrField('post_type', $post_type);
+                $cur->setStrField('post_title', $post->strField('post_title', true));
+                $cur->setIntField('cat_id', $post->intField('cat_id', true));
+                $cur->setStrField('post_format', $post->strField('post_format', true));
+                $cur->setStrField('post_password', $post->strField('post_password', true));
+                $cur->setStrField('post_lang', $post->strField('post_lang', true));
+                $cur->setStrField('post_excerpt', $post->strField('post_excerpt', true));
+                $cur->setStrField('post_excerpt_xhtml', $post->strField('post_excerpt_xhtml', true));
+                $cur->setStrField('post_content', $post->strField('post_content', true));
+                $cur->setStrField('post_content_xhtml', $post->strField('post_content_xhtml', true));
+                $cur->setStrField('post_notes', $post->strField('post_notes', true));
+                $cur->setIntField('post_position', $post->intField('post_position', true));
+                $cur->setBoolField('post_open_comment', $post->boolField('post_open_comment', true));
+                $cur->setBoolField('post_open_tb', $post->boolField('post_open_tb', true));
+                $cur->setBoolField('post_selected', $post->boolField('post_selected', true));
 
-                $cur->post_status = App::status()->post()::PENDING; // forced to pending
-                $cur->user_id     = App::auth()->userID();
+                $cur->setIntField('post_status', App::status()->post()::PENDING); // forced to pending
+                $cur->setStrField('user_id', App::auth()->userID());
 
                 if ($post_type === 'post') {
                     # --BEHAVIOR-- adminBeforePostCreate
