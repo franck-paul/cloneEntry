@@ -31,9 +31,9 @@ use Dotclear\Plugin\pages\BackendActions as PagesBackendActions;
 
 class BackendBehaviors
 {
-    private static function cloneEntryButtons(?MetaRecord $post): void
+    private static function cloneEntryButtons(?MetaRecord $metaRecord): void
     {
-        if (!is_null($post)) {
+        if (!is_null($metaRecord)) {
             // Display clone button
             echo (new Div('clone-entry-buttons'))
                 ->items([
@@ -53,11 +53,11 @@ class BackendBehaviors
         }
     }
 
-    private static function cloneEntry(?MetaRecord $post): void
+    private static function cloneEntry(?MetaRecord $metaRecord): void
     {
-        if (!is_null($post)) {
-            $post_id   = $post->intField('post_id');
-            $post_type = $post->strField('post_type');
+        if (!is_null($metaRecord)) {
+            $post_id   = $metaRecord->intField('post_id');
+            $post_type = $metaRecord->strField('post_type');
             if ($post_id !== 0 && $post_type !== '') {
                 // Display clone button
                 echo (new Div('clone-entry'))
@@ -78,52 +78,52 @@ class BackendBehaviors
         }
     }
 
-    public static function clonePostButtons(?MetaRecord $post): string
+    public static function clonePostButtons(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
         if ($settings->getBool('active_post')) {
-            self::cloneEntryButtons($post);
+            self::cloneEntryButtons($metaRecord);
         }
 
         return '';
     }
 
-    public static function clonePost(?MetaRecord $post): string
+    public static function clonePost(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
         if ($settings->getBool('active_post')) {
-            self::cloneEntry($post);
+            self::cloneEntry($metaRecord);
         }
 
         return '';
     }
 
-    public static function clonePageButtons(?MetaRecord $post): string
+    public static function clonePageButtons(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
         if ($settings->getBool('active_page')) {
-            self::cloneEntryButtons($post);
+            self::cloneEntryButtons($metaRecord);
         }
 
         return '';
     }
 
-    public static function clonePage(?MetaRecord $post): string
+    public static function clonePage(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
         if ($settings->getBool('active_page')) {
-            self::cloneEntry($post);
+            self::cloneEntry($metaRecord);
         }
 
         return '';
     }
 
-    public static function clonePosts(ActionsPosts $ap): string
+    public static function clonePosts(ActionsPosts $actionsPosts): string
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
         if ($settings->getBool('active_post') && My::checkContext(My::BACKEND)) {
-            $ap->addAction(
+            $actionsPosts->addAction(
                 [__('Clone') => [__('Clone selected posts') => 'clone']],
                 self::doClonePosts(...)
             );
@@ -132,12 +132,12 @@ class BackendBehaviors
         return '';
     }
 
-    public static function clonePages(PagesBackendActions $ap): string
+    public static function clonePages(PagesBackendActions $pagesBackendActions): string
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
         if ($settings->getBool('active_page') && My::checkContext(My::BACKEND)) {
-            $ap->addAction(
+            $pagesBackendActions->addAction(
                 [__('Clone') => [__('Clone selected pages') => 'clone']],
                 self::doClonePages(...)
             );
@@ -147,32 +147,32 @@ class BackendBehaviors
     }
 
     /**
-     * @param      ActionsPosts                 $ap     Actions
-     * @param      ArrayObject<string, mixed>   $post   The post
+     * @param      ActionsPosts                 $actionsPosts     Actions
+     * @param      ArrayObject<string, mixed>   $arrayObject   The post
      */
-    public static function doClonePosts(ActionsPosts $ap, ArrayObject $post): void
+    public static function doClonePosts(ActionsPosts $actionsPosts, ArrayObject $arrayObject): void
     {
-        self::doCloneEntries($ap, $post, 'post');
+        self::doCloneEntries($actionsPosts, $arrayObject, 'post');
     }
 
     /**
-     * @param      PagesBackendActions          $ap     Actions
-     * @param      ArrayObject<string, mixed>   $post   The post
+     * @param      PagesBackendActions          $pagesBackendActions     Actions
+     * @param      ArrayObject<string, mixed>   $arrayObject   The post
      */
-    public static function doClonePages(PagesBackendActions $ap, ArrayObject $post): void
+    public static function doClonePages(PagesBackendActions $pagesBackendActions, ArrayObject $arrayObject): void
     {
-        self::doCloneEntries($ap, $post, 'page');
+        self::doCloneEntries($pagesBackendActions, $arrayObject, 'page');
     }
 
     /**
-     * @param      ActionsPosts|PagesBackendActions     $ap     Actions
-     * @param      ArrayObject<string, mixed>           $post   The post
+     * @param      ActionsPosts|PagesBackendActions     $actionsPostsPages     Actions
+     * @param      ArrayObject<string, mixed>           $arrayObject   The post
      * @param      string                               $type   The type
      */
-    private static function doCloneEntries(ActionsPosts|PagesBackendActions $ap, ArrayObject $post, string $type = 'post'): void
+    private static function doCloneEntries(ActionsPosts|PagesBackendActions $actionsPostsPages, ArrayObject $arrayObject, string $type = 'post'): void
     {
-        if (!empty($post['full_content'])) {
-            $posts = $ap->getRS();
+        if (!empty($arrayObject['full_content'])) {
+            $posts = $actionsPostsPages->getRS();
             if ($posts->rows() !== []) {
                 while ($posts->fetch()) {
                     $post_id = $posts->intField('post_id');
@@ -244,14 +244,14 @@ class BackendBehaviors
                     }
                 }
 
-                $ap->redirect(true, ['upd' => 1]);
+                $actionsPostsPages->redirect(true, ['upd' => 1]);
             } else {
-                $ap->redirect();
+                $actionsPostsPages->redirect();
             }
         } else {
             // Ask confirmation before cloning
             if ($type === 'page') {
-                $ap->beginPage(
+                $actionsPostsPages->beginPage(
                     App::backend()->page()->breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
@@ -261,7 +261,7 @@ class BackendBehaviors
                     )
                 );
             } else {
-                $ap->beginPage(
+                $actionsPostsPages->beginPage(
                     App::backend()->page()->breadcrumb(
                         [
                             Html::escapeHTML(App::blog()->name()) => '',
@@ -273,10 +273,10 @@ class BackendBehaviors
             }
 
             echo (new Form('clone-form'))
-            ->action($ap->getURI())
+            ->action($actionsPostsPages->getURI())
             ->method('post')
             ->fields([
-                (new Text(null, $ap->getCheckboxes())),
+                (new Text(null, $actionsPostsPages->getCheckboxes())),
                 (new Para())
                     ->items([
                         (new Submit(['clone'], __('Clone'))),
@@ -290,7 +290,7 @@ class BackendBehaviors
                     ),
                 (new Para())
                     ->items([
-                        (new Text(null, $ap->getHiddenFields())),
+                        (new Text(null, $actionsPostsPages->getHiddenFields())),
                         (new Hidden(['full_content'], 'true')),
                         (new Hidden(['action'], 'clone')),
                         (new Hidden(['process'], ($type === 'post' ? 'Posts' : 'Plugin'))),
@@ -299,7 +299,7 @@ class BackendBehaviors
             ])
             ->render();
 
-            $ap->endPage();
+            $actionsPostsPages->endPage();
         }
     }
 }

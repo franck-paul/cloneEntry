@@ -46,9 +46,9 @@ class Install
                 }
 
                 // Change settings names (remove ce_ prefix in them)
-                $rename = static function (string $name, BlogWorkspaceInterface $settings): void {
-                    if ($settings->settingExists('ce_' . $name, true)) {
-                        $settings->rename('ce_' . $name, $name);
+                $rename = static function (string $name, BlogWorkspaceInterface $blogWorkspace): void {
+                    if ($blogWorkspace->settingExists('ce_' . $name, true)) {
+                        $blogWorkspace->rename('ce_' . $name, $name);
                     }
                 };
 
