@@ -61,9 +61,10 @@ class Manage
 
                 // Set date-time to now()
                 // Set status to pending (-2)
-                $params['post_type'] = $post_type;
-                $params['post_id']   = $post_id;
-
+                $params = [
+                    'post_type' => $post_type,
+                    'post_id'   => $post_id,
+                ];
                 $post = App::blog()->getPosts($params);
 
                 if ($post->isEmpty()) {
