@@ -81,7 +81,7 @@ class BackendBehaviors
     public static function clonePostButtons(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active_post')) {
+        if ($settings->getBool('active_post', false)) {
             self::cloneEntryButtons($metaRecord);
         }
 
@@ -91,7 +91,7 @@ class BackendBehaviors
     public static function clonePost(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active_post')) {
+        if ($settings->getBool('active_post', false)) {
             self::cloneEntry($metaRecord);
         }
 
@@ -101,7 +101,7 @@ class BackendBehaviors
     public static function clonePageButtons(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active_page')) {
+        if ($settings->getBool('active_page', false)) {
             self::cloneEntryButtons($metaRecord);
         }
 
@@ -111,7 +111,7 @@ class BackendBehaviors
     public static function clonePage(?MetaRecord $metaRecord): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active_page')) {
+        if ($settings->getBool('active_page', false)) {
             self::cloneEntry($metaRecord);
         }
 
@@ -122,7 +122,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
-        if ($settings->getBool('active_post') && My::checkContext(My::BACKEND)) {
+        if ($settings->getBool('active_post', false) && My::checkContext(My::BACKEND)) {
             $actionsPosts->addAction(
                 [__('Clone') => [__('Clone selected posts') => 'clone']],
                 self::doClonePosts(...)
@@ -136,7 +136,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         // Add menuitem in actions dropdown list
-        if ($settings->getBool('active_page') && My::checkContext(My::BACKEND)) {
+        if ($settings->getBool('active_page', false) && My::checkContext(My::BACKEND)) {
             $pagesBackendActions->addAction(
                 [__('Clone') => [__('Clone selected pages') => 'clone']],
                 self::doClonePages(...)
