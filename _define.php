@@ -18,9 +18,9 @@ if (isset($this) && is_object($this) && method_exists($this, 'registerModule') &
         'Clone Entry',
         'Make a clone of entry',
         'Franck Paul',
-        '9.0',
+        '10.0',
         [
-            'date'        => '2026-08-03T09:48:47+0200',
+            'date'        => '2026-11-08T10:11:03+0100',
             'requires'    => [['core', '2.40']],
             'permissions' => 'My',
             'type'        => 'plugin',
